@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:15
+    container_name: test-forge-pg-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test_forge
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - test-forge-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d test_forge"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: test-forge-api
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      TZ: Europe/Budapest
+      LANG: hu_HU.UTF-8
+      LANGUAGE: hu_HU:hu
+      LC_ALL: hu_HU.UTF-8
+      FORCE_COLOR: 1
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "pnpm dev:docker && docker-compose logs -f api"
+    networks:
+      - test-forge-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: test-forge-frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - test-forge-net
+    command: sh -c "pnpm dev"
+
+volumes:
+  postgres_data:
+
+networks:
+  test-forge-net:
+    driver: bridge
