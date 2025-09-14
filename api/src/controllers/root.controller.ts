@@ -1,4 +1,3 @@
-import { success } from "console";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 

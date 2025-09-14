@@ -59,7 +59,7 @@ class Server {
           PORT: { type: "number", default: 3000 },
           DATABASE_URL: {
             type: "string",
-            default: "postgres://postgres:postgres@db:5432/test_forge",
+            default: "postgres://user:password@db:5432/test_forge",
           },
           NODE_ENV: { type: "string", default: "development" },
         },

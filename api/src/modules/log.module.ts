@@ -1,12 +1,22 @@
 import { Signale } from "signale";
 import fs from "fs";
 
-const logStream = fs.createWriteStream("logs/server.log", { flags: "a" }) as any;
+const logStream = fs.createWriteStream("logs/server.log", {
+  flags: "a",
+}) as any;
 
 const fileLog = (level: string, ...args: any[]) => {
   const date = new Date().toLocaleDateString();
   const time = new Date().toLocaleTimeString();
-  const message = args.join(" ");
+  const message = args
+    .map((arg) => {
+      if (typeof arg === "object" && arg !== null) {
+        return JSON.stringify(arg, null, 2);
+      }
+      return String(arg);
+    })
+    .join(" ");
+
   logStream.write(`[${date}] [${time}] ${level.toUpperCase()}: ${message}\n`);
 };
 
