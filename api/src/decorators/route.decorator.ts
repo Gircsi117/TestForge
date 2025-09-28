@@ -30,9 +30,9 @@ function RouteFunction(method: HttpMehodeType, path: string) {
 
         reply.code(getStatusCode(error));
         return reply.send({
-          statusCode: reply.statusCode,
-          message: error.message,
-          error: error.name,
+          statusCode: reply.statusCode || 500,
+          message: error.message || "Internal Server Error",
+          error: error.name || "Error",
         });
       }
     };

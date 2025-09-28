@@ -32,43 +32,42 @@ export const getStatusCode = (error: Error) => {
   }
 };
 
-export const errorHandler = (
-  error: Error,
-  request: FastifyRequest,
-  reply: FastifyReply
-) => {
-  reply.code(getStatusCode(error));
-  reply.send({
-    statusCode: reply.statusCode,
-    message: error.message,
-    error: error.name,
-  });
-};
-
 export class UnauthorizedError extends Error {
+  public statusCode: number;
+
   constructor(message?: string) {
     super(message ?? "Unauthorized!");
     this.name = ErrorName.Unauthorized;
+    this.statusCode = HTTPStatus.Unauthorized;
   }
 }
 
 export class NotFoundError extends Error {
+  public statusCode: number;
+
   constructor(message?: string) {
     super(message ?? "Not found!");
     this.name = ErrorName.NotFound;
+    this.statusCode = HTTPStatus.NotFound;
   }
 }
 
 export class MissingArgumentError extends Error {
+  public statusCode: number;
+
   constructor(message?: string) {
     super(message ?? "Missing argument!");
     this.name = ErrorName.MissingArgument;
+    this.statusCode = HTTPStatus.MissingArgument;
   }
 }
 
 export class AlreadyExistsError extends Error {
+  public statusCode: number;
+
   constructor(message?: string) {
     super(message ?? "Resource already exists!");
     this.name = ErrorName.AlreadyExists;
+    this.statusCode = HTTPStatus.AlreadyExists;
   }
 }

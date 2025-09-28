@@ -14,12 +14,15 @@
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.1.0",
     "@fastify/env": "^5.0.2",
+    "@fastify/jwt": "^10.0.0",
     "chalk": "^5.6.2",
     "dotenv": "^17.2.2",
     "drizzle-orm": "^0.44.5",
     "fastify": "^5.6.0",
+    "fastify-bcrypt": "^1.0.1",
     "pg": "^8.16.3",
     "pino-pretty": "^13.1.1",
     "signale": "^1.4.0"

@@ -1,5 +1,13 @@
 import fastify from "fastify";
+
+// Plugins
 import env from "@fastify/env";
+import cors from "@fastify/cors";
+import jwt from "@fastify/jwt";
+import bcrypt from "fastify-bcrypt";
+import cookie from "@fastify/cookie";
+
+// Controllers
 import AuthController from "../controllers/auth.controller";
 import RootController from "../controllers/root.controller";
 
@@ -9,6 +17,9 @@ declare module "fastify" {
       PORT: number;
       DATABASE_URL: string;
       NODE_ENV: "development" | "production";
+      CORS_ORIGIN: string;
+      JWT_SECRET: string;
+      COOKIE_SECRET: string;
     };
   }
 }
@@ -54,6 +65,9 @@ class Server {
           "PORT", // API indító portja
           "DATABASE_URL", // Adatbázis URL-je
           "NODE_ENV", // Szerver indítási állapota
+          "CORS_ORIGIN", // Engedélyezett CORS eredet
+          "JWT_SECRET", // JWT titkos kulcs
+          "COOKIE_SECRET", // Sütik titkos kulcs
         ],
         properties: {
           PORT: { type: "number", default: 3000 },
@@ -62,8 +76,32 @@ class Server {
             default: "postgres://user:password@db:5432/test_forge",
           },
           NODE_ENV: { type: "string", default: "development" },
+          CORS_ORIGIN: { type: "string", default: "*" },
+          JWT_SECRET: {
+            type: "string",
+            default: "c7310096-48bf-43b0-a308-b75e3f9f0cbf",
+          },
+          COOKIE_SECRET: {
+            type: "string",
+            default: "817efbbb-1bec-4664-9729-756d1e8b9dd2",
+          },
         },
       },
+    });
+
+    await this.app.register(cors, {
+      origin: this.app.config.CORS_ORIGIN,
+      credentials: true,
+    });
+
+    await this.app.register(jwt, { secret: this.app.config.JWT_SECRET });
+
+    await this.app.register(bcrypt, {
+      saltWorkFactor: 12,
+    });
+
+    await this.app.register(cookie, {
+      secret: this.app.config.COOKIE_SECRET,
     });
   }
 

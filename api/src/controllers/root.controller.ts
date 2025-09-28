@@ -1,4 +1,3 @@
-import type { FastifyRequest } from "fastify";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import Server from "../modules/server.module";
@@ -26,7 +25,7 @@ class RootController extends Controller {
   }
 
   @Route("GET", "/health")
-  async getHealth(request: FastifyRequest) {
+  async getHealth() {
     const uptimeSeconds = process.uptime();
 
     const hours = Math.floor(uptimeSeconds / 3600);
