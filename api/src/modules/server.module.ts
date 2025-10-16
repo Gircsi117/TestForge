@@ -10,6 +10,7 @@ import cookie from "@fastify/cookie";
 // Controllers
 import AuthController from "../controllers/auth.controller";
 import RootController from "../controllers/root.controller";
+import CategoryController from "../controllers/category.controller";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -108,6 +109,7 @@ class Server {
   private static async defineRoutes() {
     RootController.init(this.app, { prefix: "/" });
     AuthController.init(this.app, { prefix: "/auth" });
+    CategoryController.init(this.app, { prefix: "/categoriy" });
   }
 }
 

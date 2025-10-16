@@ -107,10 +107,13 @@ class AuthController extends Controller {
   }
 
   @Route("GET", "/refresh")
-  async refresh(
-    request: FastifyRequest<{ Body: RegisterBody }>,
-    reply: FastifyReply
-  ) {}
+  async refresh(request: FastifyRequest, reply: FastifyReply) {
+    const refreshToken = request.cookies.refresh_token;
+    if (!refreshToken) throw new NotFoundError("No refresh token found!");
+
+    const payload = Server.app.jwt.verify(refreshToken);
+    if (!payload) throw new Error("Invalid refresh token!");
+  }
 }
 
 export default AuthController;

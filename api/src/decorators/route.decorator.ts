@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getStatusCode } from "../modules/error.module";
 import db from "../database/db";
+import { Controller } from "../modules/controller.module";
 
 export type HttpMehodeType = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -37,11 +38,7 @@ function RouteFunction(method: HttpMehodeType, path: string) {
       }
     };
 
-    if (!target.constructor._routes) {
-      target.constructor._routes = [];
-    }
-
-    target.constructor._routes.push({
+    target.constructor.addRoute({
       method,
       path,
       handler: descriptor.value,

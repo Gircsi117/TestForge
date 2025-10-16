@@ -1,4 +1,5 @@
-import { pgTable, varchar, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, varchar, uuid } from "drizzle-orm/pg-core";
+import { withTimestamps } from "../db";
 
 export type User = typeof UserTable.$inferSelect;
 
@@ -14,10 +15,7 @@ export const UserTable = pgTable("users", {
   email: varchar({ length: 255 }).notNull().unique(),
   phone: varchar({ length: 255 }),
   password: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp({ mode: "date", withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp({ mode: "date", withTimezone: true })
-    .defaultNow()
-    .notNull(),
+
+  // CreatedAt and UpdatedAt timestamps
+  ...withTimestamps,
 });

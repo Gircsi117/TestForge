@@ -9,12 +9,14 @@ type RouteType = {
   handler: Function;
 };
 
-export class Controller {
-  static _routes: RouteType[] = [];
+const routesMap = new WeakMap<typeof Controller, RouteType[]>();
 
+export class Controller {
   public static init(app: FastifyInstance, options: RegisterOptions = {}) {
+    const routes = routesMap.get(this) || [];
+
     const createRoutes = (app: FastifyInstance) => {
-      this._routes.forEach((route) => {
+      routes.forEach((route) => {
         app.route({
           method: route.method,
           url: route.path,
@@ -24,5 +26,12 @@ export class Controller {
     };
 
     app.register(createRoutes, options);
+  }
+
+  protected static addRoute(route: RouteType) {
+    if (!routesMap.has(this)) {
+      routesMap.set(this, []);
+    }
+    routesMap.get(this)!.push(route);
   }
 }
