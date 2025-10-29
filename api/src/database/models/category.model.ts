@@ -7,7 +7,7 @@ export type CreateCategoryArgs = Omit<
   typeof CategoryTable.$inferInsert,
   "id" | "updatedAt" | "createdAt"
 >;
-export type UpdateCategoryArgs = Partial<Omit<CreateCategoryArgs, "id">>;
+export type UpdateCategoryArgs = Partial<Omit<CreateCategoryArgs, "id" | "createdBy">>;
 
 export const CategoryTable = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),

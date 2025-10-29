@@ -1,6 +1,11 @@
+import { sql } from "drizzle-orm";
+import db from "../database/db";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import Server from "../modules/server.module";
+import { UserTable } from "../database/models/user.model";
+import { TaskTable } from "../database/models/task.model";
+import { CategoryTable } from "../database/models/category.model";
 
 class RootController extends Controller {
   @Route("GET", "/")
@@ -45,7 +50,31 @@ class RootController extends Controller {
 
   @Route("GET", "/save-db")
   async saveDB() {
-    return {success: false}
+    return { success: true };
+  }
+
+  @Route("GET", "/set-base-database")
+  async setBaseDatabase() {
+    await db.execute(sql`SET session_replication_role = 'replica'`);
+
+    await db.delete(UserTable).execute();
+    await db.delete(TaskTable).execute();
+    await db.delete(CategoryTable).execute();
+
+    await db.execute(sql`SET session_replication_role = 'origin'`);
+
+    await db
+      .insert(UserTable)
+      .values({
+        name: "Test User",
+        email: "test@tf.com",
+        password: await Server.app.bcrypt.hash("test1234"),
+      })
+      .returning();
+
+    console.success("Base database set.");
+
+    return { success: true };
   }
 }
 

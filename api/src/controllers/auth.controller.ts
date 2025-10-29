@@ -111,8 +111,32 @@ class AuthController extends Controller {
     const refreshToken = request.cookies.refresh_token;
     if (!refreshToken) throw new NotFoundError("No refresh token found!");
 
-    const payload = Server.app.jwt.verify(refreshToken);
+    const payload = Server.app.jwt.verify(refreshToken) as { id: string };
     if (!payload) throw new Error("Invalid refresh token!");
+
+    const accessToken = Server.app.jwt.sign(
+      { id: payload.id },
+      { expiresIn: "1h" }
+    );
+
+    reply.setCookie("access_token", accessToken, {
+      path: "/",
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      expires: new Date(Date.now() + COOKIE_ACCESS_LIFETIME),
+    });
+
+    reply.status(200);
+    return { success: true };
+  }
+
+  @Route("GET", "/logout")
+  async logout(request: FastifyRequest, reply: FastifyReply) {
+    reply.clearCookie("access_token");
+    reply.clearCookie("refresh_token");
+    reply.status(200);
+    return { success: true };
   }
 }
 

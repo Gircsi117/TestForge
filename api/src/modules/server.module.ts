@@ -11,6 +11,7 @@ import cookie from "@fastify/cookie";
 import AuthController from "../controllers/auth.controller";
 import RootController from "../controllers/root.controller";
 import CategoryController from "../controllers/category.controller";
+import { User } from "../database/models/user.model";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -22,6 +23,9 @@ declare module "fastify" {
       JWT_SECRET: string;
       COOKIE_SECRET: string;
     };
+  }
+  interface FastifyRequest {
+    currentUser?: User;
   }
 }
 
