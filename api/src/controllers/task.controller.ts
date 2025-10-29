@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 
-class CategoryController extends Controller {
+class TaskController extends Controller {
   @Route("GET", "/")
   async get(request: FastifyRequest, reply: FastifyReply) {}
 
@@ -16,4 +16,4 @@ class CategoryController extends Controller {
   async delete(request: FastifyRequest, reply: FastifyReply) {}
 }
 
-export default CategoryController;
+export default TaskController;

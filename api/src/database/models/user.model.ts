@@ -3,6 +3,8 @@ import { withTimestamps } from "../db";
 
 export type User = typeof UserTable.$inferSelect;
 
+export type UserRoles = "USER" | "ADMIN";
+
 export type CreateUserArgs = Omit<
   typeof UserTable.$inferInsert,
   "id" | "updatedAt" | "createdAt"
@@ -15,6 +17,7 @@ export const UserTable = pgTable("users", {
   email: varchar({ length: 255 }).notNull().unique(),
   phone: varchar({ length: 255 }),
   password: varchar({ length: 255 }).notNull(),
+  role: varchar({ length: 50 }).$type<UserRoles>().notNull().default("USER"),
 
   // CreatedAt and UpdatedAt timestamps
   ...withTimestamps,

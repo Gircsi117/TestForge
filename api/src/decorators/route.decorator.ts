@@ -29,7 +29,7 @@ function RouteFunction(method: HttpMehodeType, path: string) {
       } catch (err) {
         const error = err as Error;
 
-        reply.code(getStatusCode(error));
+        reply.code(getStatusCode(error) || 500);
         return reply.send({
           statusCode: reply.statusCode || 500,
           message: error.message || "Internal Server Error",

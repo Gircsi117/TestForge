@@ -33,6 +33,7 @@ class RootController extends Controller {
     const seconds = Math.floor(uptimeSeconds % 60);
 
     return {
+      success: true,
       timestamp: new Date().toISOString(),
       uptime: {
         seconds: uptimeSeconds,
@@ -44,20 +45,7 @@ class RootController extends Controller {
 
   @Route("GET", "/save-db")
   async saveDB() {
-    const uptimeSeconds = process.uptime();
-
-    const hours = Math.floor(uptimeSeconds / 3600);
-    const minutes = Math.floor((uptimeSeconds % 3600) / 60);
-    const seconds = Math.floor(uptimeSeconds % 60);
-
-    return {
-      timestamp: new Date().toISOString(),
-      uptime: {
-        seconds: uptimeSeconds,
-        formatted: `${hours}h ${minutes}m ${seconds}s`,
-      },
-      environment: Server.app.config.NODE_ENV,
-    };
+    return {success: false}
   }
 }
 
