@@ -131,6 +131,28 @@ class AuthController extends Controller {
     return { success: true };
   }
 
+  @Route("GET", "/check")
+  @Route.Auth()
+  async check(request: FastifyRequest, reply: FastifyReply) {
+    const user = request.currentUser!;
+
+    const accessToken = Server.app.jwt.sign(
+      { id: user.id },
+      { expiresIn: "1h" }
+    );
+
+    reply.setCookie("access_token", accessToken, {
+      path: "/",
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      expires: new Date(Date.now() + COOKIE_ACCESS_LIFETIME),
+    });
+
+    reply.status(200);
+    return { success: true, user: { ...user, password: undefined } };
+  }
+
   @Route("GET", "/logout")
   async logout(request: FastifyRequest, reply: FastifyReply) {
     reply.clearCookie("access_token");

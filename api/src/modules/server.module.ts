@@ -95,7 +95,7 @@ class Server {
     });
 
     await this.app.register(cors, {
-      origin: this.app.config.CORS_ORIGIN,
+      origin: true, // Minden engedélyezése
       credentials: true,
     });
 

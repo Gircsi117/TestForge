@@ -81,7 +81,7 @@ RouteFunction.Auth = function () {
 
       if (!user) throw new UnauthorizedError("User not found!");
 
-      request.currentUser = user ;
+      request.currentUser = { ...user, password: "" };
 
       return await originalMethod.call(this, request, reply);
     };

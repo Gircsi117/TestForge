@@ -6,10 +6,11 @@ import Server from "../modules/server.module";
 import { UserTable } from "../database/models/user.model";
 import { TaskTable } from "../database/models/task.model";
 import { CategoryTable } from "../database/models/category.model";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 class RootController extends Controller {
   @Route("GET", "/")
-  async index() {
+  async index(request: FastifyRequest, reply: FastifyReply) {
     return {
       success: true,
       message: "Hello from TestForge API!",
