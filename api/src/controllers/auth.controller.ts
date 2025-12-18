@@ -10,8 +10,7 @@ import Server from "../modules/server.module";
 type LoginBody = Pick<User, "email" | "password">;
 type RegisterBody = CreateUserArgs;
 
-export const COOKIE_ACCESS_LIFETIME = 3600 * 1000;
-export const COOKIE_REFRESH_LIFETIME = 7 * 24 * 3600 * 1000;
+export const COOKIE_LIFETIME = 30 * 24 * 3600 * 1000;
 
 class AuthController extends Controller {
   @Route("POST", "/login")
@@ -33,11 +32,7 @@ class AuthController extends Controller {
 
     const accessToken = Server.app.jwt.sign(
       { id: user.id },
-      { expiresIn: "1h" }
-    );
-    const refreshToken = Server.app.jwt.sign(
-      { id: user.id },
-      { expiresIn: "7d" }
+      { expiresIn: "30d" }
     );
 
     reply.setCookie("access_token", accessToken, {
@@ -45,14 +40,7 @@ class AuthController extends Controller {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      expires: new Date(Date.now() + COOKIE_ACCESS_LIFETIME),
-    });
-    reply.setCookie("refresh_token", refreshToken, {
-      path: "/",
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      expires: new Date(Date.now() + COOKIE_REFRESH_LIFETIME),
+      expires: new Date(Date.now() + COOKIE_LIFETIME),
     });
 
     reply.status(200);
@@ -106,31 +94,6 @@ class AuthController extends Controller {
     return { ...user, password: undefined };
   }
 
-  @Route("GET", "/refresh")
-  async refresh(request: FastifyRequest, reply: FastifyReply) {
-    const refreshToken = request.cookies.refresh_token;
-    if (!refreshToken) throw new NotFoundError("No refresh token found!");
-
-    const payload = Server.app.jwt.verify(refreshToken) as { id: string };
-    if (!payload) throw new Error("Invalid refresh token!");
-
-    const accessToken = Server.app.jwt.sign(
-      { id: payload.id },
-      { expiresIn: "1h" }
-    );
-
-    reply.setCookie("access_token", accessToken, {
-      path: "/",
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      expires: new Date(Date.now() + COOKIE_ACCESS_LIFETIME),
-    });
-
-    reply.status(200);
-    return { success: true };
-  }
-
   @Route("GET", "/check")
   @Route.Auth()
   async check(request: FastifyRequest, reply: FastifyReply) {
@@ -138,7 +101,7 @@ class AuthController extends Controller {
 
     const accessToken = Server.app.jwt.sign(
       { id: user.id },
-      { expiresIn: "1h" }
+      { expiresIn: "30d" }
     );
 
     reply.setCookie("access_token", accessToken, {
@@ -146,7 +109,7 @@ class AuthController extends Controller {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      expires: new Date(Date.now() + COOKIE_ACCESS_LIFETIME),
+      expires: new Date(Date.now() + COOKIE_LIFETIME),
     });
 
     reply.status(200);
@@ -156,7 +119,6 @@ class AuthController extends Controller {
   @Route("GET", "/logout")
   async logout(request: FastifyRequest, reply: FastifyReply) {
     reply.clearCookie("access_token");
-    reply.clearCookie("refresh_token");
     reply.status(200);
     return { success: true };
   }

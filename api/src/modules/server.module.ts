@@ -113,7 +113,7 @@ class Server {
   private static async defineRoutes() {
     RootController.init(this.app, { prefix: "/" });
     AuthController.init(this.app, { prefix: "/auth" });
-    CategoryController.init(this.app, { prefix: "/categoriy" });
+    CategoryController.init(this.app, { prefix: "/category" });
   }
 }
 

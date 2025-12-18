@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuthStore } from "../stores/auth.store";
+import { AuthError } from "../modules/error.module";
 
 type Props = {
   auth?: boolean;
@@ -13,7 +14,9 @@ const Protection: React.FC<Props> = ({ auth, error = false, children }) => {
   if (auth && !isAuth) {
     if (!error) return null;
 
-    return <div>You must be logged in to view this content.</div>;
+    throw new AuthError(
+      "Jelentkezzen be az oldal tartalmának megtekintéséhez."
+    );
   }
 
   return children;

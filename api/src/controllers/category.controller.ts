@@ -7,7 +7,7 @@ import {
   UpdateCategoryArgs,
 } from "../database/models/category.model";
 import db from "../database/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NotFoundError } from "../modules/error.module";
 
 type CreateCategoryBody = Pick<CreateCategoryArgs, "name" | "description">;
@@ -18,7 +18,6 @@ class CategoryController extends Controller {
   async get(request: FastifyRequest, reply: FastifyReply) {
     const user = request.currentUser!;
 
-    // Még finomítani kell limit és offset opciókkal
     const categories = await db
       .select()
       .from(CategoryTable)
@@ -27,6 +26,30 @@ class CategoryController extends Controller {
     return {
       success: true,
       categories: categories || [],
+    };
+  }
+
+  @Route("GET", "/:id")
+  @Route.Auth()
+  async getOne(
+    request: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply
+  ) {
+    const user = request.currentUser!;
+    const { id } = request.params;
+
+    const [category] = await db
+      .select()
+      .from(CategoryTable)
+      .where(
+        and(eq(CategoryTable.id, id), eq(CategoryTable.createdBy, user.id))
+      );
+
+    if (!category) throw new NotFoundError("Category not found!");
+
+    return {
+      success: true,
+      category: category || null,
     };
   }
 

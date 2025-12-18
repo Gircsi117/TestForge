@@ -1,5 +1,6 @@
 import { pgTable, varchar, uuid, json } from "drizzle-orm/pg-core";
 import { withTimestamps } from "../db";
+import { CategoryTable } from "./category.model";
 
 export type Task = typeof TaskTable.$inferSelect;
 
@@ -38,7 +39,9 @@ export const TaskTable = pgTable("tasks", {
   name: varchar({ length: 255 }).notNull(),
   type: varchar({ length: 50 }).notNull().$type<TaskType>(),
   description: varchar({ length: 1024 }).notNull(),
-  categoryId: uuid("categoryId").notNull(),
+  categoryId: uuid("categoryId")
+    .notNull()
+    .references(() => CategoryTable.id, { onDelete: "cascade" }),
   options: json("options").$type<
     OptionPick | OptionSorting | OptionMatching | null
   >(),

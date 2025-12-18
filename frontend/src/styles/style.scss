@@ -1,9 +1,16 @@
 :root {
   --background-color: #1f1f1f;
   --font-color: #f5f5f5;
+  --border-color: #333333;
+  --input-color: #2b2b2b;
 
+  --button-background: #265f18;
+  --button-background-hover: #317a21;
+
+  --input-height: 36px;
   --content-padding: 16px;
   --input-padding: 8px;
+  --border-radius: 4px;
 }
 
 * {
@@ -11,17 +18,223 @@
   padding: 0;
   box-sizing: border-box;
   color: var(--font-color);
+  border: none;
+}
+
+body {
+  background-color: var(--background-color);
 }
 
 #root {
   height: 100vh;
   width: 100%;
   background-color: var(--background-color);
+  display: flex;
+}
+
+.no-word-break {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+header {
+  width: 100%;
+  padding: var(--content-padding);
+  border-bottom: 1px solid var(--border-color);
+}
+
+nav {
+  padding: var(--content-padding);
+  width: 200px;
+  border-right: 1px solid var(--border-color);
 }
 
 .page,
-#page {
-  height: 100%;
+#page,
+main {
   width: 100%;
+  flex: 1;
   padding: var(--content-padding);
+  overflow-y: auto;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+//*------------------------------------------------------------------------------------------------------------------
+//* Input
+//*------------------------------------------------------------------------------------------------------------------
+input, textarea, select {
+  padding: var(--input-padding);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-color);
+  color: var(--font-color);
+  height: var(--input-height);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: var(--input-height);
+  height: calc(var(--input-height) * 3);
+}
+
+.input-holder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: var(--content-padding) 0;
+
+  .input-label {
+    margin: 0 0 4px var(--input-padding);
+  }
+}
+
+//*------------------------------------------------------------------------------------------------------------------
+//* Button
+//*------------------------------------------------------------------------------------------------------------------
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--button-background);
+  width: 100%;
+  max-width: 100%;
+  height: var(--input-height);
+  padding: 0 var(--input-padding);
+  border-radius: var(--border-radius);
+  user-select: none;
+  overflow-x: hidden;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--button-background-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .btn-icon {
+    display: inline-block;
+    max-width: 100%;
+    font-size: var(--input-icon-size);
+    color: var(--button-font-color);
+
+    * {
+      color: var(--button-font-color);
+    }
+  }
+}
+
+.secondary-btn {
+  background-color: transparent;
+  position: relative;
+
+  &::before {
+    content: "";
+    width: calc(100%);
+    height: calc(100%);
+    position: absolute;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    border: 1px solid var(--button-background);
+    border-radius: var(--border-radius);
+    pointer-events: none;
+  }
+
+  .btn-icon {
+    * {
+      color: var(--button-background);
+    }
+  }
+
+  .btn-text {
+    color: var(--button-background);
+  }
+
+  &:hover {
+    background-color: var(--button-background);
+    * {
+      color: var(--font-color);
+    }
+  }
+}
+
+.tertiary-btn {
+  background-color: transparent;
+
+  .btn-icon {
+    * {
+      color: var(--font-color);
+    }
+  }
+
+  .btn-text {
+    color: var(--font-color);
+  }
+
+  &:hover {
+    .btn-icon {
+      * {
+        color: var(--button-color);
+      }
+    }
+
+    .btn-text {
+      color: var(--button-color);
+    }
+  }
+}
+
+.icon-btn {
+  padding: 0;
+  width: var(--input-height);
+  min-width: var(--input-height);
+  height: var(--input-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.icon-btn-with-text {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  padding: 0 var(--input-padding);
+  gap: var(--input-padding);
+}
+
+//*------------------------------------------------------------------------------------------------------------------
+//* Pages
+//*------------------------------------------------------------------------------------------------------------------
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--content-padding);
+
+  .card {
+    padding: var(--content-padding);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--input-color);
+  }
 }

@@ -67,11 +67,12 @@ RouteFunction.Auth = function () {
       request: FastifyRequest,
       reply: FastifyReply
     ) {
-      const refreshToken = request.cookies.refresh_token;
-      if (!refreshToken) throw new UnauthorizedError("No access token found!");
+      const accessToken = request.cookies.access_token;
 
-      const payload = Server.app.jwt.verify(refreshToken) as { id: string };
-      if (!payload) throw new UnauthorizedError("Invalid refresh token!");
+      if (!accessToken) throw new UnauthorizedError("No access token found!");
+
+      const payload = Server.app.jwt.verify(accessToken) as { id: string };
+      if (!payload) throw new UnauthorizedError("Invalid access token!");
 
       const [user] = await db
         .select()

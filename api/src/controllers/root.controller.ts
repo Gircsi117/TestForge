@@ -64,7 +64,7 @@ class RootController extends Controller {
 
     await db.execute(sql`SET session_replication_role = 'origin'`);
 
-    await db
+    const [user] = await db
       .insert(UserTable)
       .values({
         name: "Test User",
@@ -72,6 +72,19 @@ class RootController extends Controller {
         password: await Server.app.bcrypt.hash("test1234"),
       })
       .returning();
+
+    const categories = await db.insert(CategoryTable).values([
+      {
+        name: "Mathematics",
+        description: "Ez egy alap matekos kategória!",
+        createdBy: user!.id,
+      },
+      {
+        name: "History",
+        description: "Ez egy alap történelem kategória!",
+        createdBy: user!.id,
+      },
+    ]);
 
     console.success("Base database set.");
 
