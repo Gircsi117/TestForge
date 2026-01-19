@@ -62,7 +62,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
     try {
       const res = await ForgeAxios({
         method: "PUT",
-        url: `/category/${id}`,
+        url: `/category/${category?.id}`,
         data: { name, description },
       });
 
@@ -78,7 +78,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
     try {
       const res = await ForgeAxios({
         method: "DELETE",
-        url: `/category/${id}`,
+        url: `/category/${category?.id}`,
       });
 
       console.log(res.data);
@@ -113,7 +113,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
           top: "0px",
         }}
       >
-        {type === "new" && (
+        {type === "new" && !category && (
           <Button icon={<FaSave />} onClick={addCategory}>
             Létrehozás
           </Button>

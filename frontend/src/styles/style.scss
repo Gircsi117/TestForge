@@ -52,12 +52,18 @@ header {
 }
 
 nav {
-  padding: var(--content-padding);
+  padding: calc(var(--content-padding) * 0.75);
   width: 200px;
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  gap: calc(var(--input-padding) / 2);
+
+  .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--input-padding) / 2);
+    flex: 1;
+  }
 
   .nav-item {
     display: flex;
