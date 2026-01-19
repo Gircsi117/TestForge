@@ -1,9 +1,11 @@
 import { useRef } from "react";
 import Button from "../../components/button/Button";
 import InputHolder from "../../components/input/InputHolder";
-import ForgeAxios from "../../modules/axios.module";
+import ForgeAxios, { type MyAxiosError } from "../../modules/axios.module";
 import { useAuthStore } from "../../stores/auth.store";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getErrorMessage } from "../../modules/error.module";
 
 const LoginPage = () => {
   const { login, isAuth } = useAuthStore();
@@ -18,7 +20,7 @@ const LoginPage = () => {
     console.log("Logging in with", { email, password });
 
     if (!email || !password) {
-      console.log("Kérlek töltsd ki az összes mezőt!");
+      toast.warn("Kérlek töltsd ki az összes mezőt!");
       return;
     }
 
@@ -35,7 +37,8 @@ const LoginPage = () => {
       console.log("Login successful:", res.data);
       login(res.data.user);
     } catch (error) {
-      console.log(error);
+      toast.error(getErrorMessage(error as Error));
+      console.log((error as MyAxiosError).response?.data.message);
     }
   };
 

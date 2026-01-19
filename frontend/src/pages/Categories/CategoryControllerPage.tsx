@@ -6,6 +6,8 @@ import Button from "../../components/button/Button";
 import { FaSave } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import InputHolder from "../../components/input/InputHolder";
+import { getErrorMessage } from "../../modules/error.module";
+import { toast } from "react-toastify";
 
 type Props = {
   type: "new" | "edit";
@@ -29,19 +31,74 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
       console.log(res.data);
       setCategory(res.data.category || null);
     } catch (error) {
+      toast.error(getErrorMessage(error as Error));
       console.log(error);
     }
   };
 
-  const addCategory = async () => {};
-  const updateCategory = async () => {};
-  const deleteCategory = async () => {};
+  const addCategory = async () => {
+    const name = nameRef.current?.value;
+    const description = descriptionRef.current?.value;
+
+    try {
+      const res = await ForgeAxios({
+        method: "POST",
+        url: "/category",
+        data: { name, description },
+      });
+
+      console.log(res.data);
+      toast.success(res.data.message || "Kategória sikeresen létrehozva!");
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error));
+      console.log(error);
+    }
+  };
+
+  const updateCategory = async () => {
+    const name = nameRef.current?.value;
+    const description = descriptionRef.current?.value;
+
+    try {
+      const res = await ForgeAxios({
+        method: "PUT",
+        url: `/category/${id}`,
+        data: { name, description },
+      });
+
+      console.log(res.data);
+      toast.success(res.data.message || "Kategória sikeresen frissítve!");
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error));
+      console.log(error);
+    }
+  };
+
+  const deleteCategory = async () => {
+    try {
+      const res = await ForgeAxios({
+        method: "DELETE",
+        url: `/category/${id}`,
+      });
+
+      console.log(res.data);
+      toast.success(res.data.message || "Kategória sikeresen törlve!");
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error));
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    if (type === "edit") {
-      getCategory();
-    }
+    if (type != "edit") return;
+    getCategory();
   }, []);
+
+  useEffect(() => {
+    if (!category) return;
+    nameRef.current!.value = category.name;
+    descriptionRef.current!.value = category.description;
+  }, [category]);
 
   if (type === "edit" && !category) return <main>Loading...</main>;
 
@@ -66,7 +123,11 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
             <Button icon={<FaSave />} onClick={updateCategory}>
               Módosítás
             </Button>
-            <Button icon={<FaTrash />} onClick={deleteCategory}>
+            <Button
+              icon={<FaTrash />}
+              onClick={deleteCategory}
+              style={{ backgroundColor: "red" }}
+            >
               Törlés
             </Button>
           </>

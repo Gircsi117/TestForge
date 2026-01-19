@@ -18,6 +18,8 @@
   padding: 0;
   box-sizing: border-box;
   color: var(--font-color);
+  font-size: 18px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   border: none;
 }
 
@@ -53,6 +55,22 @@ nav {
   padding: var(--content-padding);
   width: 200px;
   border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--input-padding) / 2);
+
+  .nav-item {
+    display: flex;
+    gap: var(--input-padding);
+    align-items: center;
+    padding: var(--input-padding);
+    border-radius: var(--border-radius);
+
+    &:hover {
+      background-color: var(--input-color);
+      cursor: pointer;
+    }
+  }
 }
 
 .page,
@@ -73,13 +91,16 @@ main {
 //*------------------------------------------------------------------------------------------------------------------
 //* Input
 //*------------------------------------------------------------------------------------------------------------------
-input, textarea, select {
+input,
+textarea,
+select {
   padding: var(--input-padding);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   background-color: var(--input-color);
   color: var(--font-color);
   height: var(--input-height);
+  font-size: 16px;
 
   &:focus {
     outline: none;
@@ -132,8 +153,8 @@ textarea {
   .btn-icon {
     display: inline-block;
     max-width: 100%;
-    font-size: var(--input-icon-size);
     color: var(--button-font-color);
+    display: flex;
 
     * {
       color: var(--button-font-color);
@@ -236,5 +257,16 @@ textarea {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     background-color: var(--input-color);
+    display: flex;
+    flex-direction: column;
+
+    .card-content {
+      flex: 1;
+
+      h2 {
+        font-size: 20px;
+        margin-bottom: var(--input-padding);
+      }
+    }
   }
 }

@@ -11,6 +11,8 @@ const ForgeAxios = axios.create({
   withCredentials: true,
 });
 
+export type MyAxiosError = AxiosError<{ message: string }>;
+
 ForgeAxios.interceptors.response.use(
   (response) => {
     if (response.status != 200 || !response.data.success) {
@@ -26,7 +28,7 @@ ForgeAxios.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default ForgeAxios;

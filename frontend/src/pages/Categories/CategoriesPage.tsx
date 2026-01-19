@@ -39,8 +39,10 @@ const CategoriesPage = () => {
       <div className="card-grid">
         {categories.map((category) => (
           <div key={category.id} className="card">
-            <h2>{category.name}</h2>
-            <p>{category.description}</p>
+            <div className="card-content">
+              <h2>{category.name}</h2>
+              <p>{category.description}</p>
+            </div>
 
             <Link to={`/categories/edit/${category.id}`}>
               <Button

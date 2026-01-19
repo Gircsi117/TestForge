@@ -57,7 +57,7 @@ class Server {
         console.clear();
         console.log(`Server listening at [${address}]`);
         console.log(`Server running in [${this.app.config.NODE_ENV}]`);
-      }
+      },
     );
   }
 
@@ -97,6 +97,9 @@ class Server {
     await this.app.register(cors, {
       origin: true, // Minden engedélyezése
       credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      exposedHeaders: ["Content-Length"],
     });
 
     await this.app.register(jwt, { secret: this.app.config.JWT_SECRET });

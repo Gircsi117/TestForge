@@ -33,7 +33,7 @@ class CategoryController extends Controller {
   @Route.Auth()
   async getOne(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
@@ -42,7 +42,7 @@ class CategoryController extends Controller {
       .select()
       .from(CategoryTable)
       .where(
-        and(eq(CategoryTable.id, id), eq(CategoryTable.createdBy, user.id))
+        and(eq(CategoryTable.id, id), eq(CategoryTable.createdBy, user.id)),
       );
 
     if (!category) throw new NotFoundError("Category not found!");
@@ -57,7 +57,7 @@ class CategoryController extends Controller {
   @Route.Auth()
   async create(
     request: FastifyRequest<{ Body: CreateCategoryBody }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const { name, description } = request.body;
     const user = request.currentUser!;
@@ -76,6 +76,7 @@ class CategoryController extends Controller {
     return {
       success: true,
       category,
+      message: "Category created successfully!",
     };
   }
 
@@ -86,7 +87,7 @@ class CategoryController extends Controller {
       Params: { id: string };
       Body: UpdateCategoryArgs;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const { id } = request.params;
     const { name, description } = request.body;
@@ -106,6 +107,7 @@ class CategoryController extends Controller {
     return {
       success: true,
       category: updatedCategory,
+      message: "Category updated successfully!",
     };
   }
 
@@ -113,9 +115,13 @@ class CategoryController extends Controller {
   @Route.Auth()
   async delete(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
+    console.log("Almaaa");
+    
     const { id } = request.params;
+
+    console.log(id);
 
     const deletedCount = await db.transaction(async (tx) => {
       const deleted = await tx
@@ -130,6 +136,7 @@ class CategoryController extends Controller {
 
     return {
       success: true,
+      message: "Category deleted successfully!",
     };
   }
 }

@@ -16,9 +16,14 @@ class AuthController extends Controller {
   @Route("POST", "/login")
   async login(
     request: FastifyRequest<{ Body: LoginBody }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const { email, password } = request.body;
+
+    if (!email || !password) {
+      throw new MissingArgumentError("Missing required fields!");
+    }
+
     const [user] = await db
       .select()
       .from(UserTable)
@@ -32,7 +37,7 @@ class AuthController extends Controller {
 
     const accessToken = Server.app.jwt.sign(
       { id: user.id },
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     reply.setCookie("access_token", accessToken, {
@@ -56,7 +61,7 @@ class AuthController extends Controller {
   @Route("GET", "/register")
   async register(
     request: FastifyRequest<{ Body: RegisterBody }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const { name, email, phone, password } = request.body;
 
@@ -101,7 +106,7 @@ class AuthController extends Controller {
 
     const accessToken = Server.app.jwt.sign(
       { id: user.id },
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     reply.setCookie("access_token", accessToken, {

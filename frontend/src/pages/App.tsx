@@ -10,6 +10,7 @@ import RegisterPage from "./Auth/RegisterPage";
 import Layout from "../components/layout/Layout";
 import CategoriesPage from "./Categories/CategoriesPage";
 import CategoryControllerPage from "./Categories/CategoryControllerPage";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
@@ -42,55 +43,65 @@ function App() {
     );
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth/*">
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/auth/*">
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
 
-        <Route path="/*" element={<Layout />}>
-          <Route
-            path=""
-            element={
-              <Protection auth error>
-                <HomePage />
-              </Protection>
-            }
-          />
+          <Route path="/*" element={<Layout />}>
+            <Route
+              path=""
+              element={
+                <Protection auth error>
+                  <HomePage />
+                </Protection>
+              }
+            />
 
-          <Route
-            path="categories"
-            element={
-              <Protection auth error>
-                <CategoriesPage />
-              </Protection>
-            }
-          />
+            <Route
+              path="categories"
+              element={
+                <Protection auth error>
+                  <CategoriesPage />
+                </Protection>
+              }
+            />
 
-          <Route
-            path="categories/new"
-            element={
-              <Protection auth error>
-                <CategoryControllerPage type="new" />
-              </Protection>
-            }
-          />
+            <Route
+              path="categories/new"
+              element={
+                <Protection auth error>
+                  <CategoryControllerPage type="new" />
+                </Protection>
+              }
+            />
 
-          <Route
-            path="categories/edit/:id"
-            element={
-              <Protection auth error>
-                <CategoryControllerPage type="edit" />
-              </Protection>
-            }
-          />
+            <Route
+              path="categories/edit/:id"
+              element={
+                <Protection auth error>
+                  <CategoryControllerPage type="edit" />
+                </Protection>
+              }
+            />
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        closeOnClick
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="dark"
+      />
+    </>
   );
 }
 
