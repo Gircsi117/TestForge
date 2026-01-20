@@ -1,6 +1,6 @@
 import { pgTable, varchar, uuid } from "drizzle-orm/pg-core";
-import { withTimestamps } from "../db";
 import { json } from "drizzle-orm/pg-core";
+import { withTimestamps } from "../cols/timestamp.col";
 
 export type Category = typeof CategoryTable.$inferSelect;
 
@@ -17,8 +17,7 @@ export const CategoryTable = pgTable("categories", {
   name: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 1024 }),
   createdBy: uuid("created_by").notNull(),
-  
 
   // CreatedAt and UpdatedAt timestamps
-  ...withTimestamps,
+  ...withTimestamps(),
 });

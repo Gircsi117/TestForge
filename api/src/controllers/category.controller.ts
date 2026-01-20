@@ -18,10 +18,9 @@ class CategoryController extends Controller {
   async get(request: FastifyRequest, reply: FastifyReply) {
     const user = request.currentUser!;
 
-    const categories = await db
-      .select()
-      .from(CategoryTable)
-      .where(eq(CategoryTable.createdBy, user.id));
+    const categories = await db.query.CategoryTable.findMany({
+      where: eq(CategoryTable.createdBy, user.id),
+    });
 
     return {
       success: true,
@@ -38,12 +37,12 @@ class CategoryController extends Controller {
     const user = request.currentUser!;
     const { id } = request.params;
 
-    const [category] = await db
-      .select()
-      .from(CategoryTable)
-      .where(
-        and(eq(CategoryTable.id, id), eq(CategoryTable.createdBy, user.id)),
-      );
+    const category = await db.query.CategoryTable.findFirst({
+      where: and(
+        eq(CategoryTable.id, id),
+        eq(CategoryTable.createdBy, user.id),
+      ),
+    });
 
     if (!category) throw new NotFoundError("Category not found!");
 
@@ -95,7 +94,7 @@ class CategoryController extends Controller {
     const updatedCategory = await db.transaction(async (tx) => {
       const [category] = await tx
         .update(CategoryTable)
-        .set({ name, description })
+        .set({ name, description, updatedAt: new Date() })
         .where(eq(CategoryTable.id, id))
         .returning();
 
@@ -117,11 +116,7 @@ class CategoryController extends Controller {
     request: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply,
   ) {
-    console.log("Almaaa");
-    
     const { id } = request.params;
-
-    console.log(id);
 
     const deletedCount = await db.transaction(async (tx) => {
       const deleted = await tx

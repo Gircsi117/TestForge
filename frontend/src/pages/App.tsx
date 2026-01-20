@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useAuthStore } from "../stores/auth.store";
 import ForgeAxios from "../modules/axios.module";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Protection from "../components/Protection";
 import HomePage from "./Home/HomePage";
 import NotFoundPage from "./NotFound/NotFoundPage";
@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
+  const navigate = useNavigate();
 
   const checkAuth = useCallback(async () => {
     try {
@@ -28,8 +29,9 @@ function App() {
     } catch (error) {
       console.error("Authentication check failed", error);
       logout();
+      navigate("/auth/login");
     }
-  }, [login, logout]);
+  }, [login, logout, navigate]);
 
   useEffect(() => {
     checkAuth();
@@ -44,7 +46,7 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <>
         <Routes>
           <Route path="/auth/*">
             <Route path="login" element={<LoginPage />} />
@@ -92,10 +94,10 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         closeOnClick
         pauseOnFocusLoss
         pauseOnHover

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ForgeAxios from "../../modules/axios.module";
 import { useEffect, useRef, useState } from "react";
 import type { Category } from "../../types/category.type";
@@ -15,6 +15,7 @@ type Props = {
 
 const CategoryControllerPage: React.FC<Props> = ({ type }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [category, setCategory] = useState<Category | null>(null);
 
@@ -48,6 +49,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
       });
 
       console.log(res.data);
+      setCategory(res.data.category || null);
       toast.success(res.data.message || "Kategória sikeresen létrehozva!");
     } catch (error) {
       toast.error(getErrorMessage(error as Error));
@@ -67,6 +69,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
       });
 
       console.log(res.data);
+      setCategory(res.data.category || null);
       toast.success(res.data.message || "Kategória sikeresen frissítve!");
     } catch (error) {
       toast.error(getErrorMessage(error as Error));
@@ -83,6 +86,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
 
       console.log(res.data);
       toast.success(res.data.message || "Kategória sikeresen törlve!");
+      navigate(-1);
     } catch (error) {
       toast.error(getErrorMessage(error as Error));
       console.log(error);

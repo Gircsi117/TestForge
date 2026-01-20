@@ -1,6 +1,6 @@
 import { pgTable, varchar, uuid, json } from "drizzle-orm/pg-core";
-import { withTimestamps } from "../db";
 import { CategoryTable } from "./category.model";
+import { withTimestamps } from "../cols/timestamp.col";
 
 export type Task = typeof TaskTable.$inferSelect;
 
@@ -18,17 +18,17 @@ export enum TaskType {
   ESSAY = "ESSAY",
 }
 
-type PickOptions = {
+export type PickOptions = {
   text: string;
   isCorrect: boolean;
 }[];
 
-type SortOptions = {
+export type SortOptions = {
   text: string;
   index: number;
 }[];
 
-type MatchOptions = {
+export type MatchOptions = {
   groups: string[];
   items: {
     text: string;
@@ -36,19 +36,18 @@ type MatchOptions = {
   }[];
 };
 
-type Options = PickOptions | SortOptions | MatchOptions | null;
+export type TaskOptions = PickOptions | SortOptions | MatchOptions | null;
 
 export const TaskTable = pgTable("tasks", {
   id: uuid("id").defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
   type: varchar({ length: 50 }).notNull().$type<TaskType>(),
   description: varchar({ length: 1024 }).notNull(),
   categoryId: uuid("category_id")
     .notNull()
     .references(() => CategoryTable.id, { onDelete: "cascade" }),
-  options: json("options").$type<Options>(),
+  options: json("options").$type<TaskOptions>(),
   createdBy: uuid("created_by").notNull(),
 
   // CreatedAt and UpdatedAt timestamps
-  ...withTimestamps,
+  ...withTimestamps(),
 });
