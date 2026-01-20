@@ -8,17 +8,31 @@ import {
   TaskTable,
   UpdateTaskArgs,
 } from "../database/models/task.model";
+import { CategoryTable } from "../database/models/category.model";
+import { MissingArgumentError, NotFoundError } from "../modules/error.module";
 
 class TaskController extends Controller {
   @Route("GET", "/:categoryId")
   @Route.Auth()
   async get(
     request: FastifyRequest<{ Params: { categoryId: string } }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
+    const user = request.currentUser!;
     const { categoryId } = request.params;
 
-    const tasks = db.query.TaskTable.findMany({
+    const category = await db.query.CategoryTable.findFirst({
+      where: and(
+        eq(CategoryTable.id, categoryId),
+        eq(CategoryTable.createdBy, user.id)
+      ),
+    });
+
+    if (!category) {
+      throw new NotFoundError("Category not found!");
+    }
+
+    const tasks = await db.query.TaskTable.findMany({
       where: eq(TaskTable.categoryId, categoryId),
     });
 
@@ -32,10 +46,23 @@ class TaskController extends Controller {
   @Route.Auth()
   async create(
     request: FastifyRequest<{ Body: Omit<CreateTaskArgs, "createdBy"> }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     const user = request.currentUser!;
     const { type, description, categoryId, options } = request.body;
+
+    if (!categoryId) throw new MissingArgumentError("Category ID is required!");
+
+    const category = await db.query.CategoryTable.findFirst({
+      where: and(
+        eq(CategoryTable.id, categoryId),
+        eq(CategoryTable.createdBy, user.id)
+      ),
+    });
+
+    if (!category) {
+      throw new NotFoundError("Category not found!");
+    }
 
     const task = await db.transaction(async (tx) => {
       const [task] = await tx
@@ -67,7 +94,7 @@ class TaskController extends Controller {
       Params: { id: string };
       Body: Omit<UpdateTaskArgs, "createdBy" | "categoryId">;
     }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
@@ -100,7 +127,7 @@ class TaskController extends Controller {
   @Route.Auth()
   async delete(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
+    reply: FastifyReply
   ) {
     const user = request.currentUser!;
     const { id } = request.params;

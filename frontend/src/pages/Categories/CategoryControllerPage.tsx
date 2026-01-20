@@ -8,6 +8,7 @@ import { FaTrash } from "react-icons/fa6";
 import InputHolder from "../../components/input/InputHolder";
 import { getErrorMessage } from "../../modules/error.module";
 import { toast } from "react-toastify";
+import TaskController from "./TaskController";
 
 type Props = {
   type: "new" | "edit";
@@ -122,7 +123,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
             Létrehozás
           </Button>
         )}
-        {type === "edit" && (
+        {(type === "edit" || category) && (
           <>
             <Button icon={<FaSave />} onClick={updateCategory}>
               Módosítás
@@ -145,6 +146,8 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
       <InputHolder text="Kategória leírása">
         <textarea rows={5} ref={descriptionRef}></textarea>
       </InputHolder>
+
+      {category && <TaskController category={category} />}
     </main>
   );
 };

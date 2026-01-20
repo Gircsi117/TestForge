@@ -13,6 +13,7 @@ import RootController from "../controllers/root.controller";
 import CategoryController from "../controllers/category.controller";
 import { User } from "../database/models/user.model";
 import TaskController from "../controllers/task.controller";
+import db from "../database/db";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -58,7 +59,18 @@ class Server {
         console.clear();
         console.log(`Server listening at [${address}]`);
         console.log(`Server running in [${this.app.config.NODE_ENV}]`);
-      },
+
+        /*(async () => {
+          const a = await db.query.UserTable.findMany();
+          console.log("A");
+
+          const b = await db.query.CategoryTable.findMany();
+          console.log("B");
+
+          const c = await db.query.TaskTable.findMany();
+          console.log("C");
+        })();*/
+      }
     );
   }
 

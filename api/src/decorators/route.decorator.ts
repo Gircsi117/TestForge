@@ -35,6 +35,7 @@ function RouteFunction(method: HttpMehodeType, path: string) {
         return await originalMethod.call(this, request, reply);
       } catch (err) {
         const error = err as Error;
+        console.log(error);
 
         reply.code(getStatusCode(error) || 500);
         return reply.send({

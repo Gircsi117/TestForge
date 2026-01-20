@@ -4,7 +4,11 @@ import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import Server from "../modules/server.module";
 import { UserTable } from "../database/models/user.model";
-import { TaskTable } from "../database/models/task.model";
+import {
+  PickOptions,
+  TaskTable,
+  TaskType,
+} from "../database/models/task.model";
 import { CategoryTable } from "../database/models/category.model";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
@@ -67,24 +71,65 @@ class RootController extends Controller {
     const [user] = await db
       .insert(UserTable)
       .values({
+        id: "1a4a0616-5b9f-43dc-9344-5874c8082ab2",
         name: "Test User",
         email: "test@tf.com",
         password: await Server.app.bcrypt.hash("test1234"),
       })
       .returning();
 
-    const categories = await db.insert(CategoryTable).values([
-      {
-        name: "Mathematics",
-        description: "Ez egy alap matekos kategória!",
-        createdBy: user!.id,
-      },
-      {
-        name: "History",
-        description: "Ez egy alap történelem kategória!",
-        createdBy: user!.id,
-      },
-    ]);
+    const [cat1, cat2] = await db
+      .insert(CategoryTable)
+      .values([
+        {
+          id: "2690ad4a-2d43-48f4-a87a-628a948916b2",
+          name: "Mathematics",
+          description: "Ez egy alap matekos kategória!",
+          createdBy: user!.id,
+        },
+        {
+          id: "3790bd5b-3e54-59g5-b98b-739ba58927c3",
+          name: "History",
+          description: "Ez egy alap történelem kategória!",
+          createdBy: user!.id,
+        },
+      ])
+      .returning();
+
+    const [task] = await db
+      .insert(TaskTable)
+      .values([
+        {
+          id: "dba22220-0ae1-4915-9fa6-3eacb25cb67b",
+          type: TaskType.ESSAY,
+          description: "Describe the Pythagorean theorem.",
+          categoryId: cat1!.id,
+          options: null,
+          createdBy: user!.id,
+        },
+        {
+          id: "1757b3b8-e832-4bd2-b92e-184889a14e5e",
+          type: TaskType.SINGLE_PICK,
+          description: "Describe the Pythagorean theorem.",
+          categoryId: cat1!.id,
+          options: [
+            {
+              text: "Alma",
+              isCorrect: true,
+            },
+            {
+              text: "Körte",
+              isCorrect: true,
+            },
+            {
+              text: "Tök",
+              isCorrect: false,
+            },
+          ] as PickOptions,
+          createdBy: user!.id,
+        },
+      ])
+      .returning();
 
     console.success("Base database set.");
 
