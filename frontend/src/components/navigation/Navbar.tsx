@@ -1,5 +1,5 @@
 import NavItem from "./NavItem";
-import { FaHome, FaUser } from "react-icons/fa";
+import { FaBook, FaHome, FaUser } from "react-icons/fa";
 import { MdOutlineLogin } from "react-icons/md";
 import { BiSolidCategory } from "react-icons/bi";
 import ForgeAxios from "../../modules/axios.module";
@@ -20,6 +20,7 @@ const Navbar = () => {
           link="/categories"
           icon={<BiSolidCategory />}
         />
+        <NavItem title="Tesztek" link="/tests" icon={<FaBook />} />
       </div>
       <NavItem title="Profil" link="/profile" icon={<FaUser />} />
       <NavItem

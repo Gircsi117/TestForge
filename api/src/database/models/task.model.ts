@@ -2,6 +2,7 @@ import { pgTable, varchar, uuid, json } from "drizzle-orm/pg-core";
 import { CategoryTable } from "./category.model";
 import { withTimestamps } from "../cols/timestamp.col";
 import { UserTable } from "./user.model";
+import { withCreatedBy } from "../cols/created-by.col";
 
 export type Task = typeof TaskTable.$inferSelect;
 
@@ -47,8 +48,7 @@ export const TaskTable = pgTable("tasks", {
     .notNull()
     .references(() => CategoryTable.id, { onDelete: "cascade" }),
   options: json("options").$type<TaskOptions>(),
-  createdBy: uuid("created_by").notNull().references(() => UserTable.id),
 
-  // CreatedAt and UpdatedAt timestamps
+  ...withCreatedBy(),
   ...withTimestamps(),
 });
