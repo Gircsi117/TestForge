@@ -13,6 +13,7 @@ import CategoryControllerPage from "./Category/CategoryControllerPage";
 import { ToastContainer } from "react-toastify";
 import TestPage from "./Test/TestPage";
 import TestControllerPage from "./Test/TestControllerPage";
+import PracticePage from "./Test/PracticePage";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
@@ -116,6 +117,15 @@ function App() {
               element={
                 <Protection auth error>
                   <TestControllerPage type="edit" />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="tests/:id"
+              element={
+                <Protection auth error>
+                  <PracticePage />
                 </Protection>
               }
             />

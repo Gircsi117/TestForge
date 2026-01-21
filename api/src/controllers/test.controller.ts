@@ -2,13 +2,14 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import db from "../database/db";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import {
   CreateTestArgs,
   TestTable,
   UpdateTestArgs,
 } from "../database/models/test.model";
 import { NotFoundError } from "../modules/error.module";
+import { TaskTable } from "../database/models/task.model";
 
 class TestController extends Controller {
   @Route("GET", "/")
@@ -155,6 +156,38 @@ class TestController extends Controller {
     });
 
     return { success: true, message: "Test deleted successfully!" };
+  }
+
+  //*------------------------------------------------------------------------------------------------------------------
+  //* Practice
+  //*------------------------------------------------------------------------------------------------------------------
+  @Route("GET", "/:id/practice")
+  @Route.Auth()
+  async practice(
+    request: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) {
+    const user = request.currentUser!;
+    const { id } = request.params;
+
+    const test = await db.query.TestTable.findFirst({
+      where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
+    });
+
+    if (!test) {
+      throw new NotFoundError("Test not found!");
+    }
+
+    const tasks = await db.query.TaskTable.findMany({
+      where: eq(TaskTable.categoryId, test.categoryId),
+      limit: test.questionCount,
+      orderBy: sql.raw("RANDOM()"),
+    });
+
+    console.log(tasks);
+    
+
+    return { success: true, tasks: tasks || [] };
   }
 }
 
