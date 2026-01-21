@@ -13,6 +13,7 @@ import {
 } from "../database/models/task.model";
 import { CategoryTable } from "../database/models/category.model";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { TestTable } from "../database/models/test.model";
 
 class RootController extends Controller {
   @Route("GET", "/")
@@ -64,9 +65,10 @@ class RootController extends Controller {
   async setBaseDatabase() {
     await db.execute(sql`SET session_replication_role = 'replica'`);
 
-    await db.delete(UserTable).execute();
+    await db.delete(TestTable).execute();
     await db.delete(TaskTable).execute();
     await db.delete(CategoryTable).execute();
+    await db.delete(UserTable).execute();
 
     await db.execute(sql`SET session_replication_role = 'origin'`);
 
@@ -98,7 +100,7 @@ class RootController extends Controller {
       ])
       .returning();
 
-    const [task] = await db
+    const tasks = await db
       .insert(TaskTable)
       .values([
         {
@@ -165,6 +167,19 @@ class RootController extends Controller {
               { text: "Item 3", group: "B" },
             ],
           } as MatchOptions,
+        },
+      ])
+      .returning();
+
+    const tests = await db
+      .insert(TestTable)
+      .values([
+        {
+          id: "0643560e-8ff9-46b7-aaa6-2b3b4e6b37dd",
+          name: "Test 1",
+          questionCount: 3,
+          categoryId: cat1!.id,
+          createdBy: user!.id,
         },
       ])
       .returning();

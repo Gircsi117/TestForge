@@ -33,7 +33,7 @@ const CategoriesPage = () => {
           icon={<FaPlus />}
           style={{ marginBottom: "var(--content-padding)" }}
         >
-          Új kategória
+          Új Kategória
         </Button>
       </Link>
       <div className="card-grid">

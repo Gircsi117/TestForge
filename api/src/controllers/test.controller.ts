@@ -18,6 +18,7 @@ class TestController extends Controller {
 
     const tests = await db.query.TestTable.findMany({
       where: eq(TestTable.createdBy, user.id),
+      with: { category: true },
     });
 
     return { success: true, tests: tests || [] };
@@ -34,6 +35,7 @@ class TestController extends Controller {
 
     const test = await db.query.TestTable.findFirst({
       where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
+      with: { category: true },
     });
 
     if (!test) {
