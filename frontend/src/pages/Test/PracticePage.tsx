@@ -46,15 +46,15 @@ const PracticePage = () => {
   const generateTask = useCallback(() => {
     switch (currentTask?.type) {
       case TaskType.ESSAY:
-        return <EssayTask />;
+        return <EssayTask key={currentTask.id} />;
       case TaskType.MATCHING:
-        return <MatchTask />;
+        return <MatchTask key={currentTask.id} />;
       case TaskType.SINGLE_PICK:
-        return <PickTask />;
+        return <PickTask key={currentTask.id} />;
       case TaskType.MULTI_PICK:
-        return <PickTask />;
+        return <PickTask key={currentTask.id} />;
       case TaskType.SORTING:
-        return <SortTask />;
+        return <SortTask key={currentTask.id} />;
       default:
         return null;
     }

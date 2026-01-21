@@ -106,7 +106,7 @@ class RootController extends Controller {
         {
           id: "dba22220-0ae1-4915-9fa6-3eacb25cb67b",
           type: TaskType.ESSAY,
-          description: "Describe the Pythagorean theorem.",
+          description: "Fejtse ki miért nem jó ma pályakezdőnek lenni!",
           categoryId: cat1!.id,
           options: null,
           createdBy: user!.id,
@@ -114,7 +114,7 @@ class RootController extends Controller {
         {
           id: "1757b3b8-e832-4bd2-b92e-184889a14e5e",
           type: TaskType.SINGLE_PICK,
-          description: "Describe the Pythagorean theorem.",
+          description: "Melyik gyümölcs piros?",
           categoryId: cat1!.id,
           options: [
             {
@@ -133,9 +133,30 @@ class RootController extends Controller {
           createdBy: user!.id,
         },
         {
+          id: "9411b0ec-d068-4cda-a9fd-f9f9d3a7c001",
+          type: TaskType.MULTI_PICK,
+          description: "Válassza ki a páros számokat!",
+          categoryId: cat1!.id,
+          options: [
+            {
+              text: "2",
+              isCorrect: true,
+            },
+            {
+              text: "3",
+              isCorrect: false,
+            },
+            {
+              text: "4",
+              isCorrect: true,
+            },
+          ] as PickOptions,
+          createdBy: user!.id,
+        },
+        {
           id: "f57e8a10-78c6-4526-8625-ca0da764f2f6",
           type: TaskType.SORTING,
-          description: "Order the following from first to last.",
+          description: "Állítsa sorrendbe a számokat növekvő sorrendben!",
           categoryId: cat1!.id,
           createdBy: user!.id,
           options: [
@@ -156,7 +177,7 @@ class RootController extends Controller {
         {
           id: "089ab2df-65d2-4d48-a8a4-487362f1d45b",
           type: TaskType.MATCHING,
-          description: "Describe the Pythagorean theorem.",
+          description: "Csoportosítsa az elemeket a megfelelő csoportokba!",
           categoryId: cat1!.id,
           createdBy: user!.id,
           options: {
@@ -177,7 +198,7 @@ class RootController extends Controller {
         {
           id: "0643560e-8ff9-46b7-aaa6-2b3b4e6b37dd",
           name: "Test 1",
-          questionCount: 3,
+          questionCount: 0,
           categoryId: cat1!.id,
           createdBy: user!.id,
         },
