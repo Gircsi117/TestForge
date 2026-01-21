@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Task } from "../types/task.type";
+import type { Task, TaskOptions } from "../types/task.type";
 
 interface PracticeState {
   tasks: Task[];
@@ -7,6 +7,9 @@ interface PracticeState {
 
   currentTask: Task | null;
   setCurrentTask: (task: Task | null) => void;
+
+  answers: Map<string, TaskOptions | string>;
+  setAnswer: (taskId: string, answer: TaskOptions | string) => void;
 }
 
 export const usePracticeStore = create<PracticeState>((set) => ({
@@ -14,4 +17,7 @@ export const usePracticeStore = create<PracticeState>((set) => ({
   setTasks: (tasks: Task[]) => set({ tasks }),
   currentTask: null,
   setCurrentTask: (task: Task | null) => set({ currentTask: task }),
+  answers: new Map(),
+  setAnswer: (taskId: string, answer: TaskOptions | string) =>
+    set((state) => ({ answers: state.answers.set(taskId, answer) })),
 }));
