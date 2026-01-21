@@ -18,11 +18,11 @@ export const selectStyles: StylesConfig = {
   valueContainer: (baseStyles) => ({
     ...baseStyles,
     height: "var(--input-height)",
-    padding: "0", // Nullázd le a paddingot
-    paddingLeft: "var(--input-padding)", // Csak bal oldalon legyen
-    paddingRight: "var(--input-padding)", // És jobb oldalon
+    padding: "0",
+    paddingLeft: "var(--input-padding)",
+    paddingRight: "var(--input-padding)",
     display: "flex",
-    alignItems: "center", // Függőleges középre igazítás
+    alignItems: "center",
   }),
   indicatorsContainer: (baseStyles) => ({
     ...baseStyles,
