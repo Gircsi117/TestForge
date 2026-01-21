@@ -180,12 +180,9 @@ class TestController extends Controller {
 
     const tasks = await db.query.TaskTable.findMany({
       where: eq(TaskTable.categoryId, test.categoryId),
-      limit: test.questionCount,
+      limit: test.questionCount > 0 ? test.questionCount : undefined,
       orderBy: sql.raw("RANDOM()"),
     });
-
-    console.log(tasks);
-    
 
     return { success: true, tasks: tasks || [] };
   }
