@@ -58,12 +58,12 @@ class AuthController extends Controller {
     };
   }
 
-  @Route("GET", "/register")
+  @Route("POST", "/register")
   async register(
     request: FastifyRequest<{ Body: RegisterBody }>,
     reply: FastifyReply,
   ) {
-    const { name, email, phone, password } = request.body;
+    const { name, email, password } = request.body;
 
     if (!name || !email || !password) {
       throw new MissingArgumentError("Missing required fields!");
@@ -85,7 +85,6 @@ class AuthController extends Controller {
         .values({
           name,
           email,
-          phone,
           password: hashedPassword,
         })
         .returning();
@@ -96,7 +95,7 @@ class AuthController extends Controller {
     });
 
     reply.status(200);
-    return { ...user, password: undefined };
+    return { success: true, message: "Registration successful!" };
   }
 
   @Route("GET", "/check")

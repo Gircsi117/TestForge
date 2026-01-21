@@ -5,7 +5,9 @@ import { Controller } from "../modules/controller.module";
 import Server from "../modules/server.module";
 import { UserTable } from "../database/models/user.model";
 import {
+  MatchOptions,
   PickOptions,
+  SortOptions,
   TaskTable,
   TaskType,
 } from "../database/models/task.model";
@@ -82,13 +84,13 @@ class RootController extends Controller {
       .insert(CategoryTable)
       .values([
         {
-          id: "2690ad4a-2d43-48f4-a87a-628a948916b2",
+          id: "da546af4-6969-4f6b-ac58-9210c7d6e4ac",
           name: "Mathematics",
           description: "Ez egy alap matekos kategória!",
           createdBy: user!.id,
         },
         {
-          id: "3790bd5b-3e54-59g5-b98b-739ba58927c3",
+          id: "04b752ff-5453-456c-ba8e-80e965137b39",
           name: "History",
           description: "Ez egy alap történelem kategória!",
           createdBy: user!.id,
@@ -119,7 +121,7 @@ class RootController extends Controller {
             },
             {
               text: "Körte",
-              isCorrect: true,
+              isCorrect: false,
             },
             {
               text: "Tök",
@@ -127,6 +129,42 @@ class RootController extends Controller {
             },
           ] as PickOptions,
           createdBy: user!.id,
+        },
+        {
+          id: "f57e8a10-78c6-4526-8625-ca0da764f2f6",
+          type: TaskType.SORTING,
+          description: "Order the following from first to last.",
+          categoryId: cat1!.id,
+          createdBy: user!.id,
+          options: [
+            {
+              text: "Első",
+              index: 1,
+            },
+            {
+              text: "Második",
+              index: 2,
+            },
+            {
+              text: "Harmadik",
+              index: 3,
+            },
+          ] as SortOptions,
+        },
+        {
+          id: "089ab2df-65d2-4d48-a8a4-487362f1d45b",
+          type: TaskType.MATCHING,
+          description: "Describe the Pythagorean theorem.",
+          categoryId: cat1!.id,
+          createdBy: user!.id,
+          options: {
+            groups: ["A", "B"],
+            items: [
+              { text: "Item 1", group: "A" },
+              { text: "Item 2", group: "A" },
+              { text: "Item 3", group: "B" },
+            ],
+          } as MatchOptions,
         },
       ])
       .returning();

@@ -3,7 +3,7 @@ import Button from "../../components/button/Button";
 import InputHolder from "../../components/input/InputHolder";
 import ForgeAxios, { type MyAxiosError } from "../../modules/axios.module";
 import { useAuthStore } from "../../stores/auth.store";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "../../modules/error.module";
 
@@ -56,6 +56,7 @@ const LoginPage = () => {
       <Button icon onClick={handleLogin}>
         Bejelentkezés
       </Button>
+      <Link to="/auth/register">Regisztráció</Link>
     </main>
   );
 };

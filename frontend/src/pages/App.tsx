@@ -31,7 +31,7 @@ function App() {
       logout();
       navigate("/auth/login");
     }
-  }, [login, logout, navigate]);
+  }, [login, logout]);
 
   useEffect(() => {
     checkAuth();

@@ -57,20 +57,9 @@ class Server {
         }
 
         console.clear();
-        console.log(`Server listening at [${address}]`);
-        console.log(`Server running in [${this.app.config.NODE_ENV}]`);
-
-        /*(async () => {
-          const a = await db.query.UserTable.findMany();
-          console.log("A");
-
-          const b = await db.query.CategoryTable.findMany();
-          console.log("B");
-
-          const c = await db.query.TaskTable.findMany();
-          console.log("C");
-        })();*/
-      }
+        console.log(`Server listening at ${address}`);
+        console.log(`Server running in ${this.app.config.NODE_ENV}`);
+      },
     );
   }
 
