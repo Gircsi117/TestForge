@@ -14,6 +14,7 @@ import CategoryController from "../controllers/category.controller";
 import { User } from "../database/models/user.model";
 import TaskController from "../controllers/task.controller";
 import db from "../database/db";
+import TestController from "../controllers/test.controller";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -120,6 +121,7 @@ class Server {
     AuthController.init(this.app, { prefix: "/auth" });
     CategoryController.init(this.app, { prefix: "/category" });
     TaskController.init(this.app, { prefix: "/task" });
+    TestController.init(this.app, { prefix: "/test" });
   }
 }
 

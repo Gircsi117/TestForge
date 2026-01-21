@@ -9,7 +9,9 @@ export type CreateTestArgs = Omit<
   typeof TestTable.$inferInsert,
   "id" | "updatedAt" | "createdAt"
 >;
-export type UpdateTestArgs = Partial<Omit<CreateTestArgs, "id">>;
+export type UpdateTestArgs = Partial<
+  Omit<CreateTestArgs, "id" | "createdBy" | "categoryId">
+>;
 
 export const TestTable = pgTable("tests", {
   id: uuid("id").defaultRandom().primaryKey(),
