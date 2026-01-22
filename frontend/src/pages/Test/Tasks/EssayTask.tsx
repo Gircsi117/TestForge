@@ -20,7 +20,7 @@ const EssayTask = () => {
 
   return (
     <div>
-      <p>{currentTask?.description}</p>
+      <p style={{ marginBottom: "20px" }}>{currentTask?.description}</p>
 
       <textarea
         ref={textRef}

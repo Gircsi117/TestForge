@@ -118,7 +118,7 @@ class RootController extends Controller {
           categoryId: cat1!.id,
           options: [
             {
-              text: "Alma",
+              text: "Paradicsom",
               isCorrect: true,
             },
             {
@@ -126,7 +126,7 @@ class RootController extends Controller {
               isCorrect: false,
             },
             {
-              text: "Tök",
+              text: "Szőlő",
               isCorrect: false,
             },
           ] as PickOptions,
@@ -162,15 +162,23 @@ class RootController extends Controller {
           options: [
             {
               text: "Első",
-              index: 1,
+              index: 0,
             },
             {
               text: "Második",
-              index: 2,
+              index: 1,
             },
             {
               text: "Harmadik",
+              index: 2,
+            },
+            {
+              text: "Negyedik",
               index: 3,
+            },
+            {
+              text: "Ötödik",
+              index: 4,
             },
           ] as SortOptions,
         },
