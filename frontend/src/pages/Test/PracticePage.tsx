@@ -22,15 +22,13 @@ const PracticePage = () => {
     currentTask,
     setCurrentTask,
     answers,
-    clearAnswers,
     isDone,
     setIsDone,
+    reset,
   } = usePracticeStore();
 
   const getTasks = async () => {
     try {
-      console.log(id);
-
       const res = await ForgeAxios({
         method: "GET",
         url: `/test/${id}/practice`,
@@ -46,15 +44,13 @@ const PracticePage = () => {
   };
 
   useEffect(() => {
+    reset();
     getTasks();
 
     return () => {
-      setTasks([]);
-      setCurrentTask(null);
-      clearAnswers();
-      setIsDone(false);
+      reset();
     };
-  }, []);
+  }, [id, reset]);
 
   const generateTask = useCallback(() => {
     switch (currentTask?.type) {
@@ -73,10 +69,14 @@ const PracticePage = () => {
     }
   }, [currentTask]);
 
-  if (!tasks.length) return <div className="page">Loading...</div>;
+  if (!tasks.length || !currentTask)
+    return <div className="page">Loading...</div>;
 
   return (
     <div className="page">
+      <p>
+        {answers.size}/{tasks.length}
+      </p>
       <div
         style={{
           display: "flex",
@@ -89,20 +89,23 @@ const PracticePage = () => {
         {tasks.map((task, index) => (
           <Button
             key={task.id}
-            style={{ minWidth: "40px", backgroundColor: currentTask?.id == task.id ? "#07b107" : "" }}
+            style={{
+              minWidth: "40px",
+              backgroundColor: currentTask?.id == task.id ? "#07b107" : "",
+            }}
             onClick={() => setCurrentTask(task)}
-            
           >
             {index + 1}.
           </Button>
         ))}
       </div>
       <div style={{ marginBottom: "2rem" }}>
-        {answers.size == tasks.length && !isDone && (
+        {answers.size >= tasks.length && !isDone && (
           <Button
             onClick={() => {
               setIsDone(true);
-              setCurrentTask(tasks[0])
+              setCurrentTask(tasks[0]);
+              console.log(answers);
             }}
             style={{ marginLeft: "auto" }}
             icon={<AiOutlineFileDone />}
