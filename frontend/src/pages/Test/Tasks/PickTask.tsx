@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import { usePracticeStore } from "../../../stores/practice.store";
 import { TaskType, type PickOptions } from "../../../types/task.type";
 import Button from "../../../components/button/Button";
+import { randomSort } from "../../../modules/random.module";
 
 const PickTask = () => {
   const { currentTask, answers, setAnswer } = usePracticeStore();
@@ -10,10 +11,12 @@ const PickTask = () => {
     const answer = answers.get(currentTask?.id || "") as PickOptions;
     if (!answer) {
       const options = currentTask?.options as unknown as PickOptions;
-      const initialAnswers = options.map((option) => ({
-        ...option,
-        isCorrect: false,
-      }));
+      const initialAnswers = randomSort(
+        options.map((option) => ({
+          ...option,
+          isCorrect: false,
+        })),
+      );
 
       setAnswer(currentTask?.id || "", initialAnswers);
       return;
@@ -44,11 +47,11 @@ const PickTask = () => {
               width: "var(--input-height)",
               backgroundColor: option.isCorrect ? "green" : "red",
             }}
-            onClick={()=>{
+            onClick={() => {
               const x = getOptions();
 
-              if(currentTask?.type === TaskType.SINGLE_PICK){
-                for(let i = 0; i < x.length; i++){
+              if (currentTask?.type === TaskType.SINGLE_PICK) {
+                for (let i = 0; i < x.length; i++) {
                   x[i].isCorrect = false;
                 }
               }

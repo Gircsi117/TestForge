@@ -3,6 +3,7 @@ import { usePracticeStore } from "../../../stores/practice.store";
 import type { MatchOptions } from "../../../types/task.type";
 import Select from "react-select";
 import { selectStyles } from "../../../modules/select.module";
+import { randomSort } from "../../../modules/random.module";
 
 const MatchTask = () => {
   const { currentTask, answers, setAnswer } = usePracticeStore();
@@ -14,10 +15,12 @@ const MatchTask = () => {
     const options = currentTask?.options as unknown as MatchOptions;
     const initial = {
       groups: options.groups,
-      items: options.items.map((item) => ({
-        text: item.text,
-        group: "",
-      })),
+      items: randomSort(
+        options.items.map((item) => ({
+          text: item.text,
+          group: "",
+        })),
+      ),
     };
 
     setAnswer(currentTask?.id || "", initial);
@@ -41,20 +44,26 @@ const MatchTask = () => {
             marginBottom: "10px",
           }}
         >
-          <Select
-            styles={selectStyles}
-            options={getOptions()?.groups.map((g) => ({ value: g, label: g }))}
-            onChange={(e) => {
-              console.log(e);
-              const group = e ? (e as { value: string }).value : "";
+          <div style={{minWidth: 200}}>
+            <Select
+              styles={selectStyles}
+              options={getOptions()?.groups.map((g) => ({
+                value: g,
+                label: g,
+              }))}
+              placeholder="Csoport kiválasztása"
+              onChange={(e) => {
+                console.log(e);
+                const group = e ? (e as { value: string }).value : "";
 
-              const options = getOptions();
-              options.items[index].group = group;
-              
-              setAnswer(currentTask?.id || "", options);
-            }}
-            value={{value: item.group, label: item.group}}
-          />
+                const options = getOptions();
+                options.items[index].group = group;
+
+                setAnswer(currentTask?.id || "", options);
+              }}
+              value={{ value: item.group, label: item.group }}
+            />
+          </div>
           <p>{item.text}</p>
         </div>
       ))}

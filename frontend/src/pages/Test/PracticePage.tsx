@@ -10,6 +10,7 @@ import EssayTask from "./Tasks/EssayTask";
 import MatchTask from "./Tasks/MatchTask";
 import PickTask from "./Tasks/PickTask";
 import SortTask from "./Tasks/SortTask";
+import { AiOutlineFileDone } from "react-icons/ai";
 
 const PracticePage = () => {
   const { id } = useParams();
@@ -70,7 +71,7 @@ const PracticePage = () => {
           gap: "1rem",
           overflowX: "auto",
           width: "100%",
-          marginBottom: "2rem",
+          marginBottom: "1rem",
         }}
       >
         {tasks.map((task, index) => (
@@ -83,7 +84,9 @@ const PracticePage = () => {
           </Button>
         ))}
       </div>
-
+      <Button onClick={() => {}} style={{ marginBottom: "2rem", marginLeft: "auto" }} icon={<AiOutlineFileDone />}>
+        Leadás
+      </Button>
       {generateTask()}
     </div>
   );

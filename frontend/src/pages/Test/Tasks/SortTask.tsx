@@ -3,13 +3,10 @@ import { usePracticeStore } from "../../../stores/practice.store";
 import type { SortOptions } from "../../../types/task.type";
 import Button from "../../../components/button/Button";
 import { BiSolidDownvote, BiSolidUpvote } from "react-icons/bi";
+import { randomSort } from "../../../modules/random.module";
 
 const SortTask = () => {
   const { currentTask, answers, setAnswer } = usePracticeStore();
-
-  const randomSort = (options: SortOptions) => {
-    return options.sort(() => Math.random() - 0.5);
-  };
 
   useEffect(() => {
     const answer = answers.get(currentTask?.id || "") as SortOptions;

@@ -129,6 +129,14 @@ class RootController extends Controller {
               text: "Szőlő",
               isCorrect: false,
             },
+            {
+              text: "Szilva",
+              isCorrect: false,
+            },
+            {
+              text: "Barack",
+              isCorrect: false,
+            },
           ] as PickOptions,
           createdBy: user!.id,
         },
@@ -148,6 +156,14 @@ class RootController extends Controller {
             },
             {
               text: "4",
+              isCorrect: true,
+            },
+            {
+              text: "5",
+              isCorrect: false,
+            },
+            {
+              text: "6",
               isCorrect: true,
             },
           ] as PickOptions,
@@ -189,11 +205,12 @@ class RootController extends Controller {
           categoryId: cat1!.id,
           createdBy: user!.id,
           options: {
-            groups: ["A", "B"],
+            groups: ["Szórakozás", "Kínzás"],
             items: [
-              { text: "Item 1", group: "A" },
-              { text: "Item 2", group: "A" },
-              { text: "Item 3", group: "B" },
+              { text: "Játék", group: "Szórakozás" },
+              { text: "Egyetem", group: "Kínzás" },
+              { text: "Mozi", group: "Szórakozás" },
+              { text: "Értekezlet", group: "Kínzás" },
             ],
           } as MatchOptions,
         },
