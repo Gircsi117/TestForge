@@ -6,13 +6,15 @@ import { BiSolidDownvote, BiSolidUpvote } from "react-icons/bi";
 import { randomSort } from "../../../modules/random.module";
 
 const SortTask = () => {
-  const { currentTask, answers, setAnswer } = usePracticeStore();
+  const { currentTask, answers, setAnswer, isDone } = usePracticeStore();
 
   useEffect(() => {
     const answer = answers.get(currentTask?.id || "") as SortOptions;
     if (answer) return;
 
-    const options = currentTask?.options as unknown as SortOptions;
+    const options = structuredClone(
+      currentTask?.options as unknown as SortOptions,
+    );
     const initial = randomSort(options);
     setAnswer(currentTask?.id || "", initial);
   }, []);
@@ -36,17 +38,21 @@ const SortTask = () => {
             marginBottom: "10px",
           }}
         >
-          <Button icon={<BiSolidUpvote />} disabled={index === 0} onClick={()=>{
-            const options = getOptions();
-            const temp = options[index - 1];
-            options[index - 1] = options[index];
-            options[index] = temp;
-            setAnswer(currentTask?.id || "", options);
-          }} />
+          <Button
+            icon={<BiSolidUpvote />}
+            disabled={index === 0 || isDone}
+            onClick={() => {
+              const options = getOptions();
+              const temp = options[index - 1];
+              options[index - 1] = options[index];
+              options[index] = temp;
+              setAnswer(currentTask?.id || "", options);
+            }}
+          />
           <Button
             icon={<BiSolidDownvote />}
-            disabled={index === getOptions().length - 1}
-            onClick={()=>{
+            disabled={index === getOptions().length - 1 || isDone}
+            onClick={() => {
               const options = getOptions();
               const temp = options[index + 1];
               options[index + 1] = options[index];
@@ -57,6 +63,17 @@ const SortTask = () => {
           <p>{option.text}</p>
         </div>
       ))}
+
+      {isDone && (
+        <div>
+          <p>Helyes sorrend:</p>
+          {(currentTask?.options as SortOptions).map((option, index) => (
+            <p key={option.index}>
+              {index + 1}. {option.text}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

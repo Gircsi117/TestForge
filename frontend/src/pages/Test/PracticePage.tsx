@@ -11,11 +11,21 @@ import MatchTask from "./Tasks/MatchTask";
 import PickTask from "./Tasks/PickTask";
 import SortTask from "./Tasks/SortTask";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { FaSave } from "react-icons/fa";
 
 const PracticePage = () => {
   const { id } = useParams();
 
-  const { tasks, setTasks, currentTask, setCurrentTask } = usePracticeStore();
+  const {
+    tasks,
+    setTasks,
+    currentTask,
+    setCurrentTask,
+    answers,
+    clearAnswers,
+    isDone,
+    setIsDone,
+  } = usePracticeStore();
 
   const getTasks = async () => {
     try {
@@ -41,6 +51,8 @@ const PracticePage = () => {
     return () => {
       setTasks([]);
       setCurrentTask(null);
+      clearAnswers();
+      setIsDone(false);
     };
   }, []);
 
@@ -77,16 +89,37 @@ const PracticePage = () => {
         {tasks.map((task, index) => (
           <Button
             key={task.id}
-            style={{ minWidth: "40px" }}
+            style={{ minWidth: "40px", backgroundColor: currentTask?.id == task.id ? "#07b107" : "" }}
             onClick={() => setCurrentTask(task)}
+            
           >
             {index + 1}.
           </Button>
         ))}
       </div>
-      <Button onClick={() => {}} style={{ marginBottom: "2rem", marginLeft: "auto" }} icon={<AiOutlineFileDone />}>
-        Leadás
-      </Button>
+      <div style={{ marginBottom: "2rem" }}>
+        {answers.size == tasks.length && !isDone && (
+          <Button
+            onClick={() => {
+              setIsDone(true);
+              setCurrentTask(tasks[0])
+            }}
+            style={{ marginLeft: "auto" }}
+            icon={<AiOutlineFileDone />}
+          >
+            Leadás
+          </Button>
+        )}
+        {isDone && (
+          <Button
+            onClick={() => toast.warn("Coming soon!")}
+            style={{ marginLeft: "auto" }}
+            icon={<FaSave />}
+          >
+            Mentés
+          </Button>
+        )}
+      </div>
       {generateTask()}
     </div>
   );

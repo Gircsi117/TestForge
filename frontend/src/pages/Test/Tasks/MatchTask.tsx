@@ -6,13 +6,15 @@ import { selectStyles } from "../../../modules/select.module";
 import { randomSort } from "../../../modules/random.module";
 
 const MatchTask = () => {
-  const { currentTask, answers, setAnswer } = usePracticeStore();
+  const { currentTask, answers, setAnswer, isDone } = usePracticeStore();
 
   useEffect(() => {
     const answer = answers.get(currentTask?.id || "") as MatchOptions;
     if (answer) return;
 
-    const options = currentTask?.options as unknown as MatchOptions;
+    const options = structuredClone(
+      currentTask?.options as unknown as MatchOptions,
+    );
     const initial = {
       groups: options.groups,
       items: randomSort(
@@ -44,13 +46,14 @@ const MatchTask = () => {
             marginBottom: "10px",
           }}
         >
-          <div style={{minWidth: 200}}>
+          <div style={{ minWidth: 200 }}>
             <Select
               styles={selectStyles}
               options={getOptions()?.groups.map((g) => ({
                 value: g,
                 label: g,
               }))}
+              isDisabled={isDone}
               placeholder="Csoport kiválasztása"
               onChange={(e) => {
                 console.log(e);
@@ -67,6 +70,17 @@ const MatchTask = () => {
           <p>{item.text}</p>
         </div>
       ))}
+
+      {isDone && (
+        <div>
+          <p>A helyes csoportosítás</p>
+          {(currentTask?.options as MatchOptions).items.map((item, index) => (
+            <p key={index}>
+              {item.group} - {item.text}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

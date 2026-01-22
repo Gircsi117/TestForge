@@ -5,12 +5,14 @@ import Button from "../../../components/button/Button";
 import { randomSort } from "../../../modules/random.module";
 
 const PickTask = () => {
-  const { currentTask, answers, setAnswer } = usePracticeStore();
+  const { currentTask, answers, setAnswer, isDone } = usePracticeStore();
 
   useEffect(() => {
     const answer = answers.get(currentTask?.id || "") as PickOptions;
     if (!answer) {
-      const options = currentTask?.options as unknown as PickOptions;
+      const options = structuredClone(
+        currentTask?.options as unknown as PickOptions,
+      );
       const initialAnswers = randomSort(
         options.map((option) => ({
           ...option,
@@ -43,6 +45,7 @@ const PickTask = () => {
           }}
         >
           <Button
+            disabled={isDone}
             style={{
               width: "var(--input-height)",
               backgroundColor: option.isCorrect ? "green" : "red",
@@ -65,6 +68,17 @@ const PickTask = () => {
           <p>{option.text}</p>
         </div>
       ))}
+
+      {isDone && (
+        <div>
+          <p>Helyes válasz(ok):</p>
+          {(currentTask?.options as PickOptions).map((option, index) => (
+            <p key={index}>
+              {option.isCorrect ? "✅" : "❌"}. {option.text}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

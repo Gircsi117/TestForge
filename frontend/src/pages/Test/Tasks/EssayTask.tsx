@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { usePracticeStore } from "../../../stores/practice.store";
 
 const EssayTask = () => {
-  const { currentTask, answers, setAnswer } = usePracticeStore();
+  const { currentTask, answers, setAnswer, isDone } = usePracticeStore();
 
   const textRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,6 +26,7 @@ const EssayTask = () => {
         ref={textRef}
         style={{ width: "100%", height: "200px" }}
         onChange={(e) => setAnswer(currentTask?.id || "", e.target.value)}
+        disabled={isDone}
       ></textarea>
     </div>
   );

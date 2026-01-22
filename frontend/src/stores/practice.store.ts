@@ -10,6 +10,10 @@ interface PracticeState {
 
   answers: Map<string, TaskOptions | string>;
   setAnswer: (taskId: string, answer: TaskOptions | string) => void;
+  clearAnswers: () => void;
+
+  isDone: boolean;
+  setIsDone: (isDone: boolean) => void;
 }
 
 export const usePracticeStore = create<PracticeState>((set) => ({
@@ -20,4 +24,7 @@ export const usePracticeStore = create<PracticeState>((set) => ({
   answers: new Map(),
   setAnswer: (taskId: string, answer: TaskOptions | string) =>
     set((state) => ({ answers: state.answers.set(taskId, answer) })),
+  clearAnswers: () => set({ answers: new Map() }),
+  isDone: false,
+  setIsDone: (isDone: boolean) => set({ isDone }),
 }));
