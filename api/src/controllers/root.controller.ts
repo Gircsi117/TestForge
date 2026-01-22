@@ -87,8 +87,8 @@ class RootController extends Controller {
       .values([
         {
           id: "da546af4-6969-4f6b-ac58-9210c7d6e4ac",
-          name: "Mathematics",
-          description: "Ez egy alap matekos kategória!",
+          name: "Példa",
+          description: "Ez egy példa kategória!",
           createdBy: user!.id,
         },
         {
@@ -213,6 +213,35 @@ class RootController extends Controller {
               { text: "Értekezlet", group: "Kínzás" },
             ],
           } as MatchOptions,
+        },
+        {
+          id: "90f24b3a-0b65-44fb-8e22-b090307fd4f6",
+          type: TaskType.SINGLE_PICK,
+          description: "Mikor fedezte fel Kolumbusz Kristóf Amerikát?",
+          categoryId: cat2!.id,
+          options: [
+            {
+              text: "1492",
+              isCorrect: true,
+            },
+            {
+              text: "1678",
+              isCorrect: false,
+            },
+            {
+              text: "1312",
+              isCorrect: false,
+            },
+            {
+              text: "2027",
+              isCorrect: false,
+            },
+            {
+              text: "Kr.e. 400",
+              isCorrect: false,
+            },
+          ] as PickOptions,
+          createdBy: user!.id,
         },
       ])
       .returning();
