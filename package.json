@@ -9,7 +9,8 @@
     "docker:logs": "docker-compose logs -f",
     "docker:logs:api": "docker-compose logs -f --no-log-prefix api",
     "docker:logs:front": "docker-compose logs -f --no-log-prefix frontend",
-    "docker:logs:db": "docker-compose logs -f --no-log-prefix db"
+    "docker:logs:db": "docker-compose logs -f --no-log-prefix db",
+    "db:default": "docker compose exec api pnpm tsx src/scripts/default-data.ts"
   },
   "keywords": [],
   "author": "Gircsi117",

@@ -1,4 +1,8 @@
 import fastify from "fastify";
+import * as dotenv from "dotenv";
+import "./log.module";
+
+dotenv.config({ quiet: true });
 
 // Plugins
 import env from "@fastify/env";
