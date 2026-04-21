@@ -73,13 +73,40 @@ const PickTask = () => {
       ))}
 
       {isDone && (
-        <div>
-          <p>Helyes válasz(ok):</p>
-          {(currentTask?.options as PickOptions).map((option, index) => (
-            <p key={index}>
-              {option.isCorrect ? "✅" : "❌"}. {option.text}
-            </p>
-          ))}
+        <div style={{ marginTop: "20px" }}>
+          <p style={{ marginBottom: "10px", color: "#94a3b8", fontSize: "14px" }}>
+            Helyes válasz(ok):
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {(currentTask?.options as PickOptions).map((option, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "6px 10px",
+                  borderRadius: "var(--border-radius)",
+                  backgroundColor: option.isCorrect
+                    ? "rgba(5,150,105,0.15)"
+                    : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${option.isCorrect ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.06)"}`,
+                }}
+              >
+                <span style={{ fontSize: "14px", flexShrink: 0 }}>
+                  {option.isCorrect ? "✅" : "❌"}
+                </span>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    color: option.isCorrect ? "#34d399" : "var(--font-color)",
+                  }}
+                >
+                  {option.text}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

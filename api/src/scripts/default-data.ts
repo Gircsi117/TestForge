@@ -61,7 +61,7 @@ async function main() {
           type: TaskType.ESSAY,
           description: "Fejtse ki miért nem jó ma pályakezdőnek lenni!",
           categoryId: cat1!.id,
-          options: null,
+          options: { content: "A pályakezdőknek sok kihívásuk van, például a hiányzó tapasztalat, a nem ismert munkaerő-piac, valamint a magas várakozások." },
           createdBy: user!.id,
         },
         {

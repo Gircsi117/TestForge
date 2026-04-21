@@ -65,13 +65,40 @@ const SortTask = () => {
       ))}
 
       {isDone && (
-        <div>
-          <p>Helyes sorrend:</p>
-          {(currentTask?.options as SortOptions).map((option, index) => (
-            <p key={option.index}>
-              {index + 1}. {option.text}
-            </p>
-          ))}
+        <div style={{ marginTop: "20px" }}>
+          <p style={{ marginBottom: "10px", color: "#94a3b8", fontSize: "14px" }}>
+            Helyes sorrend:
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {[...(currentTask?.options as SortOptions)]
+              .sort((a, b) => a.index - b.index)
+              .map((option, index) => (
+                <div
+                  key={option.index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "6px 10px",
+                    borderRadius: "var(--border-radius)",
+                    backgroundColor: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      color: "#fb923c",
+                      minWidth: "22px",
+                    }}
+                  >
+                    {index + 1}.
+                  </span>
+                  <span style={{ fontSize: "14px" }}>{option.text}</span>
+                </div>
+              ))}
+          </div>
         </div>
       )}
     </div>

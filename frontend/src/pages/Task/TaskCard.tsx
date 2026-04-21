@@ -1,6 +1,7 @@
 import React from "react";
 import {
   TaskType,
+  type EssayOptions,
   type MatchOptions,
   type PickOptions,
   type SortOptions,
@@ -28,7 +29,25 @@ const TaskCard: React.FC<Props> = ({ categoryId, task }) => {
   const meta = TYPE_META[task.type];
 
   const getOptions = () => {
-    if (task.type === TaskType.ESSAY) return null;
+    if (task.type === TaskType.ESSAY) {
+      const options = task.options as EssayOptions | null;
+      if (!options?.content) return null;
+      return (
+        <div
+          style={{
+            padding: "6px 10px",
+            borderRadius: "var(--border-radius)",
+            backgroundColor: "rgba(255,255,255,0.04)",
+            fontSize: "14px",
+            color: "#94a3b8",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
+        >
+          {options.content}
+        </div>
+      );
+    }
 
     if (task.type === TaskType.SINGLE_PICK || task.type === TaskType.MULTI_PICK) {
       const options = task.options as PickOptions;

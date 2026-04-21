@@ -10,6 +10,7 @@ import Button from "../../components/button/Button";
 import { FaSave, FaTrash } from "react-icons/fa";
 import SortTask from "./TaskOptions/SortTask";
 import MatchTask from "./TaskOptions/MatchTask";
+import EssayTask from "./TaskOptions/EssayTask";
 
 const TaskControllerPage = () => {
   const { categoryId = "", taskId = "" } = useParams();
@@ -131,6 +132,9 @@ const TaskControllerPage = () => {
       case TaskType.MATCHING:
         setOptions({ groups: [], items: [] });
         break;
+      case TaskType.ESSAY:
+        setOptions({ content: "" });
+        break;
 
       default:
         break;
@@ -208,6 +212,9 @@ const TaskControllerPage = () => {
       )}
       {type === TaskType.MATCHING && (
         <MatchTask type={type} options={options} setOptions={setOptions} />
+      )}
+      {type === TaskType.ESSAY && (
+        <EssayTask options={options} setOptions={setOptions} />
       )}
     </main>
   );

@@ -35,4 +35,8 @@ export type MatchOptions = {
   }[];
 };
 
-export type TaskOptions = PickOptions | SortOptions | MatchOptions | null;
+export type EssayOptions = {
+  content: string;
+};
+
+export type TaskOptions = PickOptions | SortOptions | MatchOptions | EssayOptions | null;
