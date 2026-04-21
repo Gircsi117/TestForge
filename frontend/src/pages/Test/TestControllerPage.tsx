@@ -25,6 +25,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
   const [test, setTest] = useState<Test | null>(null);
   const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
+  const [allowBack, setAllowBack] = useState<boolean>(true);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const questionCountRef = useRef<HTMLInputElement>(null);
@@ -70,6 +71,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       nameRef.current!.value = test.name;
       questionCountRef.current!.value = test.questionCount.toString();
       timeRef.current!.value = test.time.toString();
+      setAllowBack(test.allowBack);
       setSelectedCategoryId(test.categoryId);
       getTasks(test.categoryId);
       setSelectedTaskIds((test.tasks || []).map((t) => t.id));
@@ -103,7 +105,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       const res = await ForgeAxios({
         method: "POST",
         url: "/test",
-        data: { name, questionCount, time, categoryId: selectedCategoryId, taskIds: selectedTaskIds },
+        data: { name, questionCount, time, allowBack, categoryId: selectedCategoryId, taskIds: selectedTaskIds },
       });
 
       toast.success(res.data.message || "Teszt sikeresen létrehozva!");
@@ -127,7 +129,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       const res = await ForgeAxios({
         method: "PUT",
         url: `/test/${id}`,
-        data: { name, questionCount, time, taskIds: selectedTaskIds },
+        data: { name, questionCount, time, allowBack, taskIds: selectedTaskIds },
       });
 
       toast.success(res.data.message || "Teszt sikeresen módosítva!");
@@ -189,6 +191,51 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
           <InputHolder text="Kitöltési idő (perc)">
             <input type="number" min={0} ref={timeRef} defaultValue={0} />
           </InputHolder>
+        </div>
+
+        <div
+          onClick={() => setAllowBack((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 14px",
+            borderRadius: "var(--border-radius)",
+            border: `1px solid ${allowBack ? "rgba(52,211,153,0.4)" : "var(--border-color)"}`,
+            backgroundColor: allowBack ? "rgba(38,95,24,0.18)" : "var(--input-color)",
+            cursor: "pointer",
+            userSelect: "none",
+            transition: "border-color 0.15s ease, background-color 0.15s ease",
+          }}
+        >
+          <div>
+            <p style={{ fontSize: "14px", fontWeight: 600, color: allowBack ? "#f1f5f9" : "#94a3b8", marginBottom: "2px" }}>
+              Visszalépés engedélyezése
+            </p>
+            <p style={{ fontSize: "12px", color: "#475569" }}>
+              {allowBack ? "A kitöltő visszatérhet a már megválaszolt kérdésekre" : "A kitöltő nem léphet vissza a korábbi kérdésekre"}
+            </p>
+          </div>
+          <div style={{
+            width: "44px",
+            height: "24px",
+            borderRadius: "999px",
+            backgroundColor: allowBack ? "#34d399" : "#334155",
+            position: "relative",
+            flexShrink: 0,
+            transition: "background-color 0.2s ease",
+          }}>
+            <div style={{
+              position: "absolute",
+              top: "3px",
+              left: allowBack ? "23px" : "3px",
+              width: "18px",
+              height: "18px",
+              borderRadius: "50%",
+              backgroundColor: "#fff",
+              transition: "left 0.2s ease",
+            }} />
+          </div>
         </div>
       </div>
 

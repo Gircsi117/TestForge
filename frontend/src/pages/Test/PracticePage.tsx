@@ -80,6 +80,7 @@ const PracticePage = () => {
 
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [testName, setTestName] = useState<string>("");
+  const [allowBack, setAllowBack] = useState<boolean>(true);
   const [saved, setSaved] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
   const hasTimer = timeLeft !== null;
@@ -94,6 +95,7 @@ const PracticePage = () => {
       setTasks(practiceRes.data.tasks || []);
       setCurrentTask(practiceRes.data.tasks[0] || null);
       setTestName(testRes.data.test?.name ?? "");
+      setAllowBack(testRes.data.test?.allowBack ?? true);
       startTimeRef.current = Date.now();
 
       const minutes: number = testRes.data.test?.time ?? 0;
@@ -283,6 +285,8 @@ const PracticePage = () => {
         {tasks.map((task, index) => {
           const isCurrent = currentTask?.id === task.id;
           const isAnswered = answers.has(task.id);
+          const currentIndex = tasks.findIndex((t) => t.id === currentTask?.id);
+          const isBackBlocked = !allowBack && (index < currentIndex || index > currentIndex + 1);
           return (
             <Button
               key={task.id}
@@ -295,8 +299,10 @@ const PracticePage = () => {
                     : "var(--input-color)",
                 outline: isCurrent ? "2px solid #60a5fa" : "none",
                 outlineOffset: "2px",
+                opacity: isBackBlocked ? 0.4 : 1,
+                cursor: isBackBlocked ? "not-allowed" : undefined,
               }}
-              onClick={() => setCurrentTask(task)}
+              onClick={() => { if (!isBackBlocked) setCurrentTask(task); }}
             >
               {index + 1}.
             </Button>

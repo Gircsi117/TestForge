@@ -6,6 +6,7 @@ export type Test = {
   name: string;
   questionCount: number;
   time: number;
+  allowBack: boolean;
   categoryId: string;
   createdBy: string;
   createdAt: string;

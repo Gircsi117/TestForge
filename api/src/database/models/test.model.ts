@@ -1,4 +1,4 @@
-import { pgTable, varchar, uuid, integer, check } from "drizzle-orm/pg-core";
+import { pgTable, varchar, uuid, integer, check, boolean } from "drizzle-orm/pg-core";
 import { withTimestamps } from "../cols/timestamp.col";
 import { withCreatedBy } from "../cols/created-by.col";
 import { CategoryTable } from "./category.model";
@@ -21,6 +21,7 @@ export const TestTable = pgTable(
     name: varchar({ length: 255 }).notNull(),
     questionCount: integer("question_count").notNull().default(0),
     time: integer("time").notNull().default(0),
+    allowBack: boolean("allow_back").notNull().default(true),
     categoryId: uuid("category_id")
       .notNull()
       .references(() => CategoryTable.id, { onDelete: "cascade" }),

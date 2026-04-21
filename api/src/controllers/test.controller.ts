@@ -67,7 +67,7 @@ class TestController extends Controller {
     _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
-    const { name, questionCount, categoryId, taskIds = [] } = request.body;
+    const { name, questionCount, categoryId, taskIds = [], allowBack = true } = request.body;
 
     const category = await db.query.CategoryTable.findFirst({
       where: and(
@@ -91,6 +91,7 @@ class TestController extends Controller {
           name,
           questionCount,
           categoryId,
+          allowBack,
           createdBy: user.id,
         })
         .returning();

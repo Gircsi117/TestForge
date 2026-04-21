@@ -6,7 +6,7 @@ import type { Test } from "../../types/test.type";
 import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
 import { FaClock, FaListUl, FaPen, FaPlus } from "react-icons/fa";
-import { FaGear, FaTag } from "react-icons/fa6";
+import { FaGear, FaTag, FaArrowLeft } from "react-icons/fa6";
 import { formatTestDuration } from "../../modules/time.module";
 
 const TestPage = () => {
@@ -146,6 +146,36 @@ const TestPage = () => {
                   >
                     {test.category.name}
                   </Link>
+                </div>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <FaArrowLeft
+                    style={{
+                      color: test.allowBack ? "#a78bfa" : "#64748b",
+                      fontSize: "13px",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>
+                    Visszalépés
+                  </span>
+                  <span
+                    style={{
+                      marginLeft: "auto",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      padding: "1px 10px",
+                      borderRadius: "999px",
+                      backgroundColor: test.allowBack
+                        ? "rgba(167,139,250,0.12)"
+                        : "rgba(255,255,255,0.05)",
+                      color: test.allowBack ? "#a78bfa" : "#64748b",
+                      border: `1px solid ${test.allowBack ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)"}`,
+                    }}
+                  >
+                    {test.allowBack ? "Engedélyezett" : "Tiltott"}
+                  </span>
                 </div>
               </div>
             </div>
