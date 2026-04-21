@@ -41,7 +41,9 @@ const PickTask: React.FC<Props> = ({ type, options, setOptions }) => {
           <Button
             icon
             style={{
-              backgroundColor: option.isCorrect ? "green" : "red",
+              background: option.isCorrect ? "#265f18" : "var(--input-color)",
+              border: `1px solid ${option.isCorrect ? "#34d399" : "var(--border-color)"}`,
+              boxShadow: option.isCorrect ? "0 0 0 2px rgba(52,211,153,0.25)" : "none",
               ...(type === TaskType.SINGLE_PICK && { borderRadius: "100%" }),
             }}
             onClick={() => {
@@ -72,7 +74,7 @@ const PickTask: React.FC<Props> = ({ type, options, setOptions }) => {
           />
           <Button
             icon={<FaTrash />}
-            style={{ backgroundColor: "darkred" }}
+            style={{ background: "darkred" }}
             onClick={() => {
               setOptions((p) => {
                 const prev = p as PickOptions;

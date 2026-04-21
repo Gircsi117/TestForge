@@ -48,7 +48,9 @@ const PickTask = () => {
             disabled={isDone}
             style={{
               width: "var(--input-height)",
-              backgroundColor: option.isCorrect ? "green" : "red",
+              background: option.isCorrect ? "#265f18" : "var(--input-color)",
+              border: `1px solid ${option.isCorrect ? "#34d399" : "var(--border-color)"}`,
+              boxShadow: option.isCorrect ? "0 0 0 2px rgba(52,211,153,0.25)" : "none",
               ...(currentTask?.type === TaskType.SINGLE_PICK
                 ? { borderRadius: "100%" }
                 : {}),
