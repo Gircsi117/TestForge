@@ -180,42 +180,48 @@ const TaskControllerPage = () => {
         )}
       </div>
 
-      {!isEdit() && (
-        <select
-          value={type}
-          onChange={(e) => {
-            const value = e.target.value as TaskType;
-            setType(value);
-            resetoptions(value);
-          }}
-        >
-          <option value={TaskType.SINGLE_PICK}>Egyválasztós</option>
-          <option value={TaskType.MULTI_PICK}>Többválasztós</option>
-          <option value={TaskType.SORTING}>Rendezés</option>
-          <option value={TaskType.MATCHING}>Párosítás</option>
-          <option value={TaskType.ESSAY}>Esszé</option>
-        </select>
-      )}
+      <div className="section-card">
+        {!isEdit() && (
+          <InputHolder text="Feladat típusa">
+            <select
+              value={type}
+              onChange={(e) => {
+                const value = e.target.value as TaskType;
+                setType(value);
+                resetoptions(value);
+              }}
+            >
+              <option value={TaskType.SINGLE_PICK}>Egyválasztós</option>
+              <option value={TaskType.MULTI_PICK}>Többválasztós</option>
+              <option value={TaskType.SORTING}>Rendezés</option>
+              <option value={TaskType.MATCHING}>Párosítás</option>
+              <option value={TaskType.ESSAY}>Esszé</option>
+            </select>
+          </InputHolder>
+        )}
 
-      <InputHolder text="Kategória leírása">
-        <textarea rows={5} ref={descriptionRef}></textarea>
-      </InputHolder>
+        <InputHolder text="Feladat leírása">
+          <textarea rows={5} ref={descriptionRef}></textarea>
+        </InputHolder>
+      </div>
 
-      {type === TaskType.SINGLE_PICK && (
-        <PickTask type={type} options={options} setOptions={setOptions} />
-      )}
-      {type === TaskType.MULTI_PICK && (
-        <PickTask type={type} options={options} setOptions={setOptions} />
-      )}
-      {type === TaskType.SORTING && (
-        <SortTask type={type} options={options} setOptions={setOptions} />
-      )}
-      {type === TaskType.MATCHING && (
-        <MatchTask type={type} options={options} setOptions={setOptions} />
-      )}
-      {type === TaskType.ESSAY && (
-        <EssayTask options={options} setOptions={setOptions} />
-      )}
+      <div className="section-card">
+        {type === TaskType.SINGLE_PICK && (
+          <PickTask type={type} options={options} setOptions={setOptions} />
+        )}
+        {type === TaskType.MULTI_PICK && (
+          <PickTask type={type} options={options} setOptions={setOptions} />
+        )}
+        {type === TaskType.SORTING && (
+          <SortTask type={type} options={options} setOptions={setOptions} />
+        )}
+        {type === TaskType.MATCHING && (
+          <MatchTask type={type} options={options} setOptions={setOptions} />
+        )}
+        {type === TaskType.ESSAY && (
+          <EssayTask options={options} setOptions={setOptions} />
+        )}
+      </div>
     </main>
   );
 };

@@ -434,6 +434,23 @@ textarea {
 //* Pages
 //*------------------------------------------------------------------------------------------------------------------
 
+.section-card {
+  padding: var(--content-padding);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: rgba(0, 0, 0, 0.15);
+  margin-bottom: var(--content-padding);
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: var(--content-padding);
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -105,23 +105,6 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
     descriptionRef.current!.value = category.description;
   }, [category]);
 
-  const cardStyle: React.CSSProperties = {
-    padding: "var(--content-padding)",
-    border: "1px solid var(--border-color)",
-    borderRadius: "var(--border-radius)",
-    backgroundColor: "rgba(0,0,0,0.15)",
-    marginBottom: "var(--content-padding)",
-  };
-
-  const sectionTitleStyle: React.CSSProperties = {
-    fontSize: "13px",
-    fontWeight: 600,
-    color: "#64748b",
-    textTransform: "uppercase",
-    letterSpacing: "0.7px",
-    marginBottom: "var(--content-padding)",
-  };
-
   if (type === "edit" && !category) return <main>Loading...</main>;
 
   return (
@@ -148,8 +131,8 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
         )}
       </div>
 
-      <div style={cardStyle}>
-        <p style={sectionTitleStyle}>Alapadatok</p>
+      <div className="section-card">
+        <p className="section-title">Alapadatok</p>
         <InputHolder text="Kategória neve">
           <input type="text" ref={nameRef} />
         </InputHolder>

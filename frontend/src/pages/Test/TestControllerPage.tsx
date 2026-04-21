@@ -180,14 +180,8 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       </div>
 
       {/* Form section */}
-      <div style={{
-        padding: "var(--content-padding)",
-        border: "1px solid var(--border-color)",
-        borderRadius: "var(--border-radius)",
-        backgroundColor: "rgba(0,0,0,0.15)",
-        marginBottom: "var(--content-padding)",
-      }}>
-        <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "var(--content-padding)" }}>
+      <div className="section-card">
+        <p className="section-title">
           Alapadatok
         </p>
 
@@ -207,14 +201,8 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
       {/* Category picker (only for new) */}
       {type === "new" && (
-        <div style={{
-          padding: "var(--content-padding)",
-          border: "1px solid var(--border-color)",
-          borderRadius: "var(--border-radius)",
-          backgroundColor: "rgba(0,0,0,0.15)",
-          marginBottom: "var(--content-padding)",
-        }}>
-          <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "var(--content-padding)" }}>
+        <div className="section-card">
+          <p className="section-title">
             Kategória kiválasztása
           </p>
 
@@ -275,14 +263,9 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
       {/* Task picker */}
       {availableTasks.length > 0 && (
-        <div style={{
-          padding: "var(--content-padding)",
-          border: "1px solid var(--border-color)",
-          borderRadius: "var(--border-radius)",
-          backgroundColor: "rgba(0,0,0,0.15)",
-        }}>
+        <div className="section-card">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--content-padding)" }}>
-            <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px" }}>
+            <p className="section-title" style={{ marginBottom: 0 }}>
               Rögzített feladatok
             </p>
             <span style={{

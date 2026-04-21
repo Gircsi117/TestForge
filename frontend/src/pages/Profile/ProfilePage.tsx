@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { toast } from "react-toastify";
 import ForgeAxios from "../../modules/axios.module";
 import { useAuthStore } from "../../stores/auth.store";
@@ -63,27 +63,11 @@ const ProfilePage = () => {
     }
   };
 
-  const cardStyle: React.CSSProperties = {
-    padding: "var(--content-padding)",
-    border: "1px solid var(--border-color)",
-    borderRadius: "var(--border-radius)",
-    backgroundColor: "rgba(0,0,0,0.15)",
-  };
-
-  const sectionTitleStyle: React.CSSProperties = {
-    fontSize: "13px",
-    fontWeight: 600,
-    color: "#64748b",
-    textTransform: "uppercase",
-    letterSpacing: "0.7px",
-    marginBottom: "var(--content-padding)",
-  };
-
   return (
     <div className="page">
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--content-padding)", maxWidth: "480px", margin: "0 auto" }}>
-        <div style={cardStyle}>
-          <p style={sectionTitleStyle}>Névmódosítás</p>
+        <div className="section-card">
+          <p className="section-title">Névmódosítás</p>
           <InputHolder text="Teljes név">
             <input type="text" ref={nameRef} defaultValue={user?.name} />
           </InputHolder>
@@ -94,8 +78,8 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div style={cardStyle}>
-          <p style={sectionTitleStyle}>Jelszóváltoztatás</p>
+        <div className="section-card">
+          <p className="section-title">Jelszóváltoztatás</p>
           <InputHolder text="Jelenlegi jelszó">
             <input type="password" ref={currentPasswordRef} placeholder="••••••••" />
           </InputHolder>
