@@ -49,7 +49,7 @@ const LoginPage = () => {
         </div>
 
         <h2 className="auth-title">Bejelentkezés</h2>
-        <p className="auth-subtitle">Üdvözlünk vissza!</p>
+        <p className="auth-subtitle">Üdvözlünk eme csodás oldalon!</p>
 
         <div className="auth-fields">
           <div className="auth-field">
