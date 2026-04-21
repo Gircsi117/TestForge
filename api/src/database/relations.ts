@@ -4,10 +4,12 @@ import { UserTable } from "./models/user.model";
 import { TaskTable } from "./models/task.model";
 import { TestTable } from "./models/test.model";
 import { TestTaskTable } from "./models/test-task.model";
+import { HistoryTable } from "./models/history.model";
 
 export const userRelations = relations(UserTable, ({ many }) => ({
   categories: many(CategoryTable),
   tasks: many(TaskTable),
+  history: many(HistoryTable),
 }));
 
 export const categoryRelations = relations(CategoryTable, ({ one, many }) => ({
@@ -40,6 +42,7 @@ export const testRelations = relations(TestTable, ({ one, many }) => ({
     references: [UserTable.id],
   }),
   testTasks: many(TestTaskTable),
+  history: many(HistoryTable),
 }));
 
 export const testTaskRelations = relations(TestTaskTable, ({ one }) => ({
@@ -50,5 +53,16 @@ export const testTaskRelations = relations(TestTaskTable, ({ one }) => ({
   task: one(TaskTable, {
     fields: [TestTaskTable.taskId],
     references: [TaskTable.id],
+  }),
+}));
+
+export const historyRelations = relations(HistoryTable, ({ one }) => ({
+  user: one(UserTable, {
+    fields: [HistoryTable.userId],
+    references: [UserTable.id],
+  }),
+  test: one(TestTable, {
+    fields: [HistoryTable.testId],
+    references: [TestTable.id],
   }),
 }));

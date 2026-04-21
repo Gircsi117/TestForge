@@ -109,9 +109,9 @@ class TestController extends Controller {
           );
 
         if (validTasks.length > 0) {
-          await tx.insert(TestTaskTable).values(
-            validTasks.map((t) => ({ testId: test.id, taskId: t.id })),
-          );
+          await tx
+            .insert(TestTaskTable)
+            .values(validTasks.map((t) => ({ testId: test.id, taskId: t.id })));
         }
       }
 
@@ -170,9 +170,9 @@ class TestController extends Controller {
             );
 
           if (validTasks.length > 0) {
-            await tx.insert(TestTaskTable).values(
-              validTasks.map((t) => ({ testId: id, taskId: t.id })),
-            );
+            await tx
+              .insert(TestTaskTable)
+              .values(validTasks.map((t) => ({ testId: id, taskId: t.id })));
           }
         }
       }

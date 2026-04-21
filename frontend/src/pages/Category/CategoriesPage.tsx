@@ -4,9 +4,7 @@ import type { Category } from "../../types/category.type";
 import Button from "../../components/button/Button";
 import { FaGear, FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-
-const getMonogram = (name: string) =>
-  name.trim().charAt(0).toUpperCase();
+import { getMonogram } from "../../modules/monogram.module";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -27,7 +25,10 @@ const CategoriesPage = () => {
   return (
     <main>
       <Link to="/categories/new" style={{ display: "inline-block" }}>
-        <Button icon={<FaPlus />} style={{ marginBottom: "var(--content-padding)" }}>
+        <Button
+          icon={<FaPlus />}
+          style={{ marginBottom: "var(--content-padding)" }}
+        >
           Új Kategória
         </Button>
       </Link>
@@ -39,7 +40,14 @@ const CategoriesPage = () => {
             style={{ borderTop: "3px solid var(--button-background)", gap: 0 }}
           >
             <div className="card-content">
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  marginBottom: "12px",
+                }}
+              >
                 <div
                   style={{
                     width: "40px",
@@ -58,7 +66,9 @@ const CategoriesPage = () => {
                 >
                   {getMonogram(category.name)}
                 </div>
-                <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{category.name}</h2>
+                <h2 style={{ fontSize: "18px", fontWeight: 700 }}>
+                  {category.name}
+                </h2>
               </div>
               {category.description && (
                 <p

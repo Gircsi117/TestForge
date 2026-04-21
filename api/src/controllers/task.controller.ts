@@ -144,7 +144,6 @@ class TaskController extends Controller {
           type,
           description,
           options,
-          updatedAt: new Date(),
         })
         .where(and(eq(TaskTable.id, id), eq(TaskTable.createdBy, user.id)))
         .returning();

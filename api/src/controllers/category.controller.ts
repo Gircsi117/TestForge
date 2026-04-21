@@ -94,7 +94,7 @@ class CategoryController extends Controller {
     const updatedCategory = await db.transaction(async (tx) => {
       const [category] = await tx
         .update(CategoryTable)
-        .set({ name, description, updatedAt: new Date() })
+        .set({ name, description })
         .where(eq(CategoryTable.id, id))
         .returning();
 

@@ -7,6 +7,7 @@ export const withTimestamps = () => {
       .notNull(),
     updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
       .defaultNow()
-      .notNull(),
+      .notNull()
+      .$onUpdate(() => new Date()),
   };
 };

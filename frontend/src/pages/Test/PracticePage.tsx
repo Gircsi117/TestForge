@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "../../modules/error.module";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ForgeAxios from "../../modules/axios.module";
 import Button from "../../components/button/Button";
 import { usePracticeStore } from "../../stores/practice.store";
@@ -20,13 +20,7 @@ import SortTask from "./Tasks/SortTask";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { FaSave } from "react-icons/fa";
 import { MdTimer } from "react-icons/md";
-
-const formatTime = (seconds: number) => {
-  const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
-  const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
-  const s = (seconds % 60).toString().padStart(2, "0");
-  return `${h}:${m}:${s}`;
-};
+import { formatTime } from "../../modules/time.module";
 
 const isTaskCorrect = (task: Task, answer: TaskOptions | string): boolean => {
   switch (task.type) {
@@ -47,7 +41,9 @@ const isTaskCorrect = (task: Task, answer: TaskOptions | string): boolean => {
       const correct = task.options as MatchOptions;
       const userAnswer = answer as MatchOptions;
       return correct.items.every((correctItem) => {
-        const userItem = userAnswer.items.find((i) => i.text === correctItem.text);
+        const userItem = userAnswer.items.find(
+          (i) => i.text === correctItem.text,
+        );
         return userItem?.group === correctItem.group;
       });
     }
@@ -83,6 +79,9 @@ const PracticePage = () => {
   } = usePracticeStore();
 
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [testName, setTestName] = useState<string>("");
+  const [saved, setSaved] = useState(false);
+  const startTimeRef = useRef<number>(Date.now());
   const hasTimer = timeLeft !== null;
 
   const getTasks = async () => {
@@ -94,6 +93,8 @@ const PracticePage = () => {
 
       setTasks(practiceRes.data.tasks || []);
       setCurrentTask(practiceRes.data.tasks[0] || null);
+      setTestName(testRes.data.test?.name ?? "");
+      startTimeRef.current = Date.now();
 
       const minutes: number = testRes.data.test?.time ?? 0;
       if (minutes > 0) setTimeLeft(minutes * 60);
@@ -139,6 +140,28 @@ const PracticePage = () => {
     () => tasks.filter((t) => t.type !== TaskType.ESSAY).length,
     [tasks],
   );
+
+  const saveHistory = async () => {
+    if (score === null) return;
+    const timeTaken = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    try {
+      await ForgeAxios({
+        method: "POST",
+        url: "/history",
+        data: {
+          testId: id,
+          testName,
+          score,
+          maxScore: gradableCount,
+          timeTaken,
+        },
+      });
+      setSaved(true);
+      toast.success("Eredmény elmentve!");
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error));
+    }
+  };
 
   const generateTask = useCallback(() => {
     switch (currentTask?.type) {
@@ -196,15 +219,32 @@ const PracticePage = () => {
             marginBottom: "4px",
           }}
         >
-          <span style={{ fontSize: "14px", color: "gray" }}>Megválaszolt feladatok</span>
+          <span style={{ fontSize: "14px", color: "gray" }}>
+            Megválaszolt feladatok
+          </span>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums" }}>
+            <span
+              style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums" }}
+            >
               {answers.size}/{tasks.length}
             </span>
             {hasTimer && (
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: timeLeft! <= 60 ? "#ef4444" : "inherit" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  color: timeLeft! <= 60 ? "#ef4444" : "inherit",
+                }}
+              >
                 <MdTimer style={{ fontSize: "16px" }} />
-                <span style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums", fontWeight: 500 }}>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontVariantNumeric: "tabular-nums",
+                    fontWeight: 500,
+                  }}
+                >
                   {formatTime(timeLeft!)}
                 </span>
               </div>
@@ -278,11 +318,12 @@ const PracticePage = () => {
         )}
         {isDone && (
           <Button
-            onClick={() => toast.warn("Coming soon!")}
+            onClick={saveHistory}
             style={{ marginLeft: "auto" }}
             icon={<FaSave />}
+            disabled={saved}
           >
-            Mentés
+            {saved ? "Elmentve" : "Mentés"}
           </Button>
         )}
       </div>

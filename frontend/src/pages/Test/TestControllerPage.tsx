@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { Category } from "../../types/category.type";
-import { TaskType, type Task } from "../../types/task.type";
+import type { Task } from "../../types/task.type";
 import ForgeAxios from "../../modules/axios.module";
 import InputHolder from "../../components/input/InputHolder";
 import Button from "../../components/button/Button";
@@ -10,17 +10,10 @@ import { getErrorMessage } from "../../modules/error.module";
 import type { Test } from "../../types/test.type";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidCategory } from "react-icons/bi";
+import { TASK_TYPE_META } from "../../constants/taskTypeMeta";
 
 type Props = {
   type: "new" | "edit";
-};
-
-const TYPE_META: Record<TaskType, { label: string; color: string; bg: string }> = {
-  [TaskType.SINGLE_PICK]: { label: "Egyválasztós", color: "#60a5fa", bg: "rgba(37,99,235,0.15)" },
-  [TaskType.MULTI_PICK]:  { label: "Többválasztós", color: "#a78bfa", bg: "rgba(109,40,217,0.15)" },
-  [TaskType.SORTING]:     { label: "Sorrend",        color: "#fb923c", bg: "rgba(234,88,12,0.15)"  },
-  [TaskType.MATCHING]:    { label: "Párosítás",      color: "#34d399", bg: "rgba(5,150,105,0.15)"  },
-  [TaskType.ESSAY]:       { label: "Esszé",          color: "#94a3b8", bg: "rgba(100,116,139,0.15)"},
 };
 
 const TestControllerPage: React.FC<Props> = ({ type }) => {
@@ -283,7 +276,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
           <div className="card-grid">
             {availableTasks.map((task) => {
               const selected = selectedTaskIds.includes(task.id);
-              const meta = TYPE_META[task.type];
+              const meta = TASK_TYPE_META[task.type];
               return (
                 <div
                   key={task.id}

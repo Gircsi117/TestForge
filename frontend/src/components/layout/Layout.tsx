@@ -11,7 +11,7 @@ const Layout = () => {
       <Navbar />
       <div className="content">
         <Header />
-        <ErrorBoundary FallbackComponent={() => <ErrorPage />}>
+        <ErrorBoundary FallbackComponent={ErrorPage}>
           <Outlet />
         </ErrorBoundary>
       </div>

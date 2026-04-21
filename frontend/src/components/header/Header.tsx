@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth.store";
 import { UserRoles } from "../../types/user.type";
+import { getMonogram } from "../../modules/monogram.module";
 
 const PAGE_TITLES: { pattern: RegExp; title: string }[] = [
   { pattern: /^\/categories\/new$/, title: "Új Kategória" },
@@ -23,9 +24,6 @@ const getPageTitle = (pathname: string): string => {
   return "TestForge";
 };
 
-const getMonogram = (name: string) =>
-  name.trim().charAt(0).toUpperCase();
-
 const Header = () => {
   const { user } = useAuthStore();
   const location = useLocation();
@@ -44,9 +42,7 @@ const Header = () => {
             <span className="header-user-name">{user.name}</span>
             <span className="header-user-email">{user.email}</span>
           </div>
-          <div className="header-avatar">
-            {getMonogram(user.name)}
-          </div>
+          <div className="header-avatar">{getMonogram(user.name)}</div>
         </div>
       )}
     </header>

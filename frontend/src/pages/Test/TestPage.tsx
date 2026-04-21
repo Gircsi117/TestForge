@@ -7,14 +7,7 @@ import { Link } from "react-router-dom";
 import Button from "../../components/button/Button";
 import { FaClock, FaListUl, FaPen, FaPlus } from "react-icons/fa";
 import { FaGear, FaTag } from "react-icons/fa6";
-
-const formatTime = (minutes: number) => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m} perc`;
-  if (m === 0) return `${h} ó`;
-  return `${h} ó ${m} perc`;
-};
+import { formatTestDuration } from "../../modules/time.module";
 
 const TestPage = () => {
   const [tests, setTests] = useState<Test[]>([]);
@@ -121,7 +114,7 @@ const TestPage = () => {
                       border: `1px solid ${test.time > 0 ? "rgba(251,146,60,0.25)" : "rgba(255,255,255,0.08)"}`,
                     }}
                   >
-                    {test.time > 0 ? formatTime(test.time) : "nincs"}
+                    {test.time > 0 ? formatTestDuration(test.time) : "nincs"}
                   </span>
                 </div>
                 <div

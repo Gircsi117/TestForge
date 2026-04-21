@@ -9,7 +9,11 @@ import Server from "../modules/server.module";
 
 type LoginBody = Pick<User, "email" | "password">;
 type RegisterBody = CreateUserArgs;
-type UpdateProfileBody = { name?: string; currentPassword?: string; newPassword?: string };
+type UpdateProfileBody = {
+  name?: string;
+  currentPassword?: string;
+  newPassword?: string;
+};
 
 export const COOKIE_LIFETIME = 30 * 24 * 3600 * 1000;
 
@@ -25,11 +29,9 @@ class AuthController extends Controller {
       throw new MissingArgumentError("Missing required fields!");
     }
 
-    const [user] = await db
-      .select()
-      .from(UserTable)
-      .where(eq(UserTable.email, email))
-      .limit(1);
+    const user = await db.query.UserTable.findFirst({
+      where: eq(UserTable.email, email),
+    });
 
     if (!user) throw new NotFoundError("User not found!");
 
@@ -70,11 +72,9 @@ class AuthController extends Controller {
       throw new MissingArgumentError("Missing required fields!");
     }
 
-    const [existingUser] = await db
-      .select()
-      .from(UserTable)
-      .where(eq(UserTable.email, email))
-      .limit(1);
+    const existingUser = await db.query.UserTable.findFirst({
+      where: eq(UserTable.email, email),
+    });
 
     if (existingUser) throw new Error("User already exists!");
 
@@ -138,18 +138,23 @@ class AuthController extends Controller {
     }
 
     if (newPassword !== undefined) {
-      if (!currentPassword) throw new MissingArgumentError("Add meg a jelenlegi jelszót!");
+      if (!currentPassword)
+        throw new MissingArgumentError("Add meg a jelenlegi jelszót!");
 
-      const [dbUser] = await db
-        .select()
-        .from(UserTable)
-        .where(eq(UserTable.id, currentUser.id))
-        .limit(1);
+      const dbUser = await db.query.UserTable.findFirst({
+        where: eq(UserTable.id, currentUser.id),
+      });
 
-      const isValid = await Server.app.bcrypt.compare(currentPassword, dbUser.password);
+      const isValid = await Server.app.bcrypt.compare(
+        currentPassword,
+        dbUser!.password,
+      );
       if (!isValid) throw new NotFoundError("A jelenlegi jelszó helytelen!");
 
-      if (newPassword.length < 6) throw new MissingArgumentError("Az új jelszónak legalább 6 karakter hosszúnak kell lennie!");
+      if (newPassword.length < 6)
+        throw new MissingArgumentError(
+          "Az új jelszónak legalább 6 karakter hosszúnak kell lennie!",
+        );
 
       updates.password = await Server.app.bcrypt.hash(newPassword);
     }

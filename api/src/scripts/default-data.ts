@@ -11,6 +11,7 @@ import {
 } from "../database/models/task.model";
 import { CategoryTable } from "../database/models/category.model";
 import { UserTable } from "../database/models/user.model";
+import { HistoryTable } from "../database/models/history.model";
 
 async function main() {
   try {
@@ -18,6 +19,7 @@ async function main() {
 
     await db.execute(sql`SET session_replication_role = 'replica'`);
 
+    await db.delete(HistoryTable).execute();
     await db.delete(TestTable).execute();
     await db.delete(TaskTable).execute();
     await db.delete(CategoryTable).execute();
@@ -61,7 +63,10 @@ async function main() {
           type: TaskType.ESSAY,
           description: "Fejtse ki miért nem jó ma pályakezdőnek lenni!",
           categoryId: cat1!.id,
-          options: { content: "A pályakezdőknek sok kihívásuk van, például a hiányzó tapasztalat, a nem ismert munkaerő-piac, valamint a magas várakozások." },
+          options: {
+            content:
+              "A pályakezdőknek sok kihívásuk van, például a hiányzó tapasztalat, a nem ismert munkaerő-piac, valamint a magas várakozások.",
+          },
           createdBy: user!.id,
         },
         {
