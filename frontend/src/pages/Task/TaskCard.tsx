@@ -6,12 +6,18 @@ import {
   type SortOptions,
   type Task,
 } from "../../types/task.type";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/button/Button";
+import { FaPencilAlt } from "react-icons/fa";
 
 type Props = {
+  categoryId: string;
   task: Task;
 };
 
-const TaskCard: React.FC<Props> = ({ task }) => {
+const TaskCard: React.FC<Props> = ({ categoryId, task }) => {
+  const navigate = useNavigate();
+
   const getOptions = () => {
     if (task.type === TaskType.ESSAY) return null;
 
@@ -70,7 +76,15 @@ const TaskCard: React.FC<Props> = ({ task }) => {
     <div key={task.id} className="card">
       <h3>{task.description}</h3>
       <p>Type: {task.type}</p>
-      {getOptions()}
+      <div style={{ margin: "12px 0px", flex: 1 }}>{getOptions()}</div>
+
+      <Button
+        icon={<FaPencilAlt />}
+        onClick={() => navigate(`/tasks/${categoryId}/${task.id}`)}
+        style={{ width: "100%", justifyContent: "center" }}
+      >
+        Szerkesztés
+      </Button>
     </div>
   );
 };

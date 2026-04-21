@@ -8,7 +8,7 @@ import { FaTrash } from "react-icons/fa6";
 import InputHolder from "../../components/input/InputHolder";
 import { getErrorMessage } from "../../modules/error.module";
 import { toast } from "react-toastify";
-import TaskController from "./TaskController";
+import Tasks from "../Task/Tasks";
 
 type Props = {
   type: "new" | "edit";
@@ -50,7 +50,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
       });
 
       console.log(res.data);
-      setCategory(res.data.category || null);
+      navigate(`/categories/edit/${res.data.category.id}`);
       toast.success(res.data.message || "Kategória sikeresen létrehozva!");
     } catch (error) {
       toast.error(getErrorMessage(error as Error));
@@ -147,7 +147,7 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
         <textarea rows={5} ref={descriptionRef}></textarea>
       </InputHolder>
 
-      {category && <TaskController category={category} />}
+      {category && <Tasks categoryId={category.id} />}
     </main>
   );
 };

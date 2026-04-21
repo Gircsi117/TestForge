@@ -1,8 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { usePracticeStore } from "../../../stores/practice.store";
 import type { MatchOptions } from "../../../types/task.type";
-import Select from "react-select";
-import { selectStyles } from "../../../modules/select.module";
 import { randomSort } from "../../../modules/random.module";
 
 const MatchTask = () => {
@@ -47,25 +45,20 @@ const MatchTask = () => {
           }}
         >
           <div style={{ minWidth: 200 }}>
-            <Select
-              styles={selectStyles}
-              options={getOptions()?.groups.map((g) => ({
-                value: g,
-                label: g,
-              }))}
-              isDisabled={isDone}
-              placeholder="Csoport kiválasztása"
+            <select
+              disabled={isDone}
+              value={item.group}
               onChange={(e) => {
-                console.log(e);
-                const group = e ? (e as { value: string }).value : "";
-
                 const options = getOptions();
-                options.items[index].group = group;
-
+                options.items[index].group = e.target.value;
                 setAnswer(currentTask?.id || "", options);
               }}
-              value={{ value: item.group, label: item.group }}
-            />
+            >
+              <option value="">Csoport kiválasztása</option>
+              {getOptions()?.groups.map((g) => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
           </div>
           <p>{item.text}</p>
         </div>

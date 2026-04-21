@@ -107,10 +107,19 @@ select {
   color: var(--font-color);
   height: var(--input-height);
   font-size: 16px;
+  width: 100%;
 
   &:focus {
     outline: none;
   }
+}
+
+select {
+  padding: 0 var(--input-padding);
+}
+
+option {
+  font-size: 16px;
 }
 
 textarea {

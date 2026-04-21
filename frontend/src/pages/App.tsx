@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import TestPage from "./Test/TestPage";
 import TestControllerPage from "./Test/TestControllerPage";
 import PracticePage from "./Test/PracticePage";
+import TaskControllerPage from "./Task/TaskControllerPage";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
@@ -80,7 +81,7 @@ function App() {
               path="categories/new"
               element={
                 <Protection auth error>
-                  <CategoryControllerPage type="new" />
+                  <CategoryControllerPage key={"new"} type="new" />
                 </Protection>
               }
             />
@@ -89,7 +90,25 @@ function App() {
               path="categories/edit/:id"
               element={
                 <Protection auth error>
-                  <CategoryControllerPage type="edit" />
+                  <CategoryControllerPage key={"edit"} type="edit" />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="tasks/:categoryId"
+              element={
+                <Protection auth error>
+                  <TaskControllerPage key={"new"} />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="tasks/:categoryId/:taskId"
+              element={
+                <Protection auth error>
+                  <TaskControllerPage key={"edit"} />
                 </Protection>
               }
             />

@@ -49,6 +49,9 @@ const PickTask = () => {
             style={{
               width: "var(--input-height)",
               backgroundColor: option.isCorrect ? "green" : "red",
+              ...(currentTask?.type === TaskType.SINGLE_PICK
+                ? { borderRadius: "100%" }
+                : {}),
             }}
             onClick={() => {
               const x = getOptions();

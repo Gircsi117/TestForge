@@ -14,9 +14,9 @@ import { MissingArgumentError, NotFoundError } from "../modules/error.module";
 class TaskController extends Controller {
   @Route("GET", "/:categoryId")
   @Route.Auth()
-  async get(
+  async getAll(
     request: FastifyRequest<{ Params: { categoryId: string } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { categoryId } = request.params;
@@ -24,7 +24,7 @@ class TaskController extends Controller {
     const category = await db.query.CategoryTable.findFirst({
       where: and(
         eq(CategoryTable.id, categoryId),
-        eq(CategoryTable.createdBy, user.id)
+        eq(CategoryTable.createdBy, user.id),
       ),
     });
 
@@ -42,11 +42,48 @@ class TaskController extends Controller {
     };
   }
 
+  @Route("GET", "/:categoryId/:taskId")
+  @Route.Auth()
+  async getOne(
+    request: FastifyRequest<{ Params: { categoryId: string; taskId: string } }>,
+    reply: FastifyReply,
+  ) {
+    const user = request.currentUser!;
+    const { categoryId, taskId } = request.params;
+
+    const category = await db.query.CategoryTable.findFirst({
+      where: and(
+        eq(CategoryTable.id, categoryId),
+        eq(CategoryTable.createdBy, user.id),
+      ),
+    });
+
+    if (!category) {
+      throw new NotFoundError("Category not found!");
+    }
+
+    const task = await db.query.TaskTable.findFirst({
+      where: and(
+        eq(TaskTable.categoryId, categoryId),
+        eq(TaskTable.id, taskId),
+      ),
+    });
+
+    if (!task) {
+      throw new NotFoundError("Task not found!");
+    }
+
+    return {
+      success: true,
+      task: task || null,
+    };
+  }
+
   @Route("POST", "/")
   @Route.Auth()
   async create(
     request: FastifyRequest<{ Body: Omit<CreateTaskArgs, "createdBy"> }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { type, description, categoryId, options } = request.body;
@@ -56,7 +93,7 @@ class TaskController extends Controller {
     const category = await db.query.CategoryTable.findFirst({
       where: and(
         eq(CategoryTable.id, categoryId),
-        eq(CategoryTable.createdBy, user.id)
+        eq(CategoryTable.createdBy, user.id),
       ),
     });
 
@@ -94,7 +131,7 @@ class TaskController extends Controller {
       Params: { id: string };
       Body: Omit<UpdateTaskArgs, "createdBy" | "categoryId">;
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
@@ -127,7 +164,7 @@ class TaskController extends Controller {
   @Route.Auth()
   async delete(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
