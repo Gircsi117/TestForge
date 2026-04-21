@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type NavItemProps = {
   title: string;
@@ -9,10 +9,17 @@ type NavItemProps = {
 
 const NavItem: React.FC<NavItemProps> = ({ title, link, icon, onClick }) => {
   return (
-    <Link to={link || "#"} className="nav-item" onClick={onClick}>
-      {icon}
-      <span>{title}</span>
-    </Link>
+    <NavLink
+      to={link || "#"}
+      end={link === "/"}
+      className={({ isActive }) =>
+        `nav-item${isActive && link && link !== "#" ? " active" : ""}`
+      }
+      onClick={onClick}
+    >
+      <span className="nav-item-icon">{icon}</span>
+      <span className="nav-item-label">{title}</span>
+    </NavLink>
   );
 };
 

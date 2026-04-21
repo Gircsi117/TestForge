@@ -5,17 +5,15 @@ import Button from "../../components/button/Button";
 import { FaGear, FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
+const getMonogram = (name: string) =>
+  name.trim().charAt(0).toUpperCase();
+
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const getCategories = async () => {
     try {
-      const res = await ForgeAxios({
-        method: "GET",
-        url: "/category",
-      });
-
-      console.log(res.data);
+      const res = await ForgeAxios({ method: "GET", url: "/category" });
       setCategories(res.data.categories || []);
     } catch (error) {
       console.log(error);
@@ -29,29 +27,65 @@ const CategoriesPage = () => {
   return (
     <main>
       <Link to="/categories/new" style={{ display: "inline-block" }}>
-        <Button
-          icon={<FaPlus />}
-          style={{ marginBottom: "var(--content-padding)" }}
-        >
+        <Button icon={<FaPlus />} style={{ marginBottom: "var(--content-padding)" }}>
           Új Kategória
         </Button>
       </Link>
       <div className="card-grid">
         {categories.map((category) => (
-          <div key={category.id} className="card">
+          <div
+            key={category.id}
+            className="card"
+            style={{ borderTop: "3px solid var(--button-background)", gap: 0 }}
+          >
             <div className="card-content">
-              <h2>{category.name}</h2>
-              <p>{category.description}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "10px",
+                    backgroundColor: "rgba(38,95,24,0.35)",
+                    border: "1px solid rgba(38,95,24,0.6)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    color: "#34d399",
+                    flexShrink: 0,
+                  }}
+                >
+                  {getMonogram(category.name)}
+                </div>
+                <h2 style={{ fontSize: "18px", fontWeight: 700 }}>{category.name}</h2>
+              </div>
+              {category.description && (
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "#94a3b8",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  {category.description}
+                </p>
+              )}
             </div>
 
-            <Link to={`/categories/edit/${category.id}`}>
-              <Button
-                icon={<FaGear />}
-                style={{ marginTop: "var(--content-padding)", width: "100%" }}
-              >
-                Kategória módosítása
-              </Button>
-            </Link>
+            <div
+              style={{
+                borderTop: "1px solid var(--border-color)",
+                marginTop: "16px",
+                paddingTop: "12px",
+              }}
+            >
+              <Link to={`/categories/edit/${category.id}`}>
+                <Button icon={<FaGear />} style={{ width: "100%" }}>
+                  Kategória módosítása
+                </Button>
+              </Link>
+            </div>
           </div>
         ))}
       </div>

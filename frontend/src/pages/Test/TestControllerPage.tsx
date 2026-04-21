@@ -1,19 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import type { Category } from "../../types/category.type";
-import type { Task } from "../../types/task.type";
+import { TaskType, type Task } from "../../types/task.type";
 import ForgeAxios from "../../modules/axios.module";
 import InputHolder from "../../components/input/InputHolder";
-import Select from "react-select";
-import { selectStyles } from "../../modules/select.module";
 import Button from "../../components/button/Button";
 import { FaSave, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "../../modules/error.module";
 import type { Test } from "../../types/test.type";
 import { useNavigate, useParams } from "react-router-dom";
+import { BiSolidCategory } from "react-icons/bi";
 
 type Props = {
   type: "new" | "edit";
+};
+
+const TYPE_META: Record<TaskType, { label: string; color: string; bg: string }> = {
+  [TaskType.SINGLE_PICK]: { label: "Egyválasztós", color: "#60a5fa", bg: "rgba(37,99,235,0.15)" },
+  [TaskType.MULTI_PICK]:  { label: "Többválasztós", color: "#a78bfa", bg: "rgba(109,40,217,0.15)" },
+  [TaskType.SORTING]:     { label: "Sorrend",        color: "#fb923c", bg: "rgba(234,88,12,0.15)"  },
+  [TaskType.MATCHING]:    { label: "Párosítás",      color: "#34d399", bg: "rgba(5,150,105,0.15)"  },
+  [TaskType.ESSAY]:       { label: "Esszé",          color: "#94a3b8", bg: "rgba(100,116,139,0.15)"},
 };
 
 const TestControllerPage: React.FC<Props> = ({ type }) => {
@@ -68,6 +75,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       nameRef.current!.value = test.name;
       questionCountRef.current!.value = test.questionCount.toString();
       timeRef.current!.value = test.time.toString();
+      setSelectedCategoryId(test.categoryId);
       getTasks(test.categoryId);
       setSelectedTaskIds((test.tasks || []).map((t) => t.id));
     }
@@ -77,6 +85,13 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
     setSelectedTaskIds((prev) =>
       prev.includes(taskId) ? prev.filter((i) => i !== taskId) : [...prev, taskId],
     );
+  };
+
+  const selectCategory = (categoryId: string) => {
+    if (selectedCategoryId === categoryId) return;
+    setSelectedCategoryId(categoryId);
+    setSelectedTaskIds([]);
+    getTasks(categoryId);
   };
 
   const createTest = async () => {
@@ -142,95 +157,197 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   return (
     <div className="page">
-      <div
-        style={{
-          display: "flex",
-          gap: "var(--input-padding)",
-          justifyContent: "flex-end",
-          position: "sticky",
-          top: "0px",
-        }}
-      >
+
+      {/* Action bar */}
+      <div style={{ display: "flex", gap: "var(--input-padding)", justifyContent: "flex-end", marginBottom: "var(--content-padding)" }}>
         {type === "new" && (
-          <Button icon={<FaSave />} onClick={createTest}>
+          <Button icon={<FaSave />} onClick={createTest} style={{ width: "auto" }}>
             Létrehozás
           </Button>
         )}
         {type === "edit" && (
           <>
-            <Button icon={<FaSave />} onClick={updateTest}>
+            <Button icon={<FaSave />} onClick={updateTest} style={{ width: "auto" }}>
               Módosítás
             </Button>
-            <Button
-              icon={<FaTrash />}
-              style={{ backgroundColor: "red" }}
-              onClick={deleteTest}
-            >
+            <Button icon={<FaTrash />} onClick={deleteTest} style={{ width: "auto", background: "linear-gradient(180deg,#b91c1c,#991b1b)", boxShadow: "0 1px 3px rgba(0,0,0,0.4)" }}>
               Törlés
             </Button>
           </>
         )}
       </div>
 
-      <InputHolder text="Név">
-        <input type="text" ref={nameRef} />
-      </InputHolder>
+      {/* Form section */}
+      <div style={{
+        padding: "var(--content-padding)",
+        border: "1px solid var(--border-color)",
+        borderRadius: "var(--border-radius)",
+        backgroundColor: "rgba(0,0,0,0.15)",
+        marginBottom: "var(--content-padding)",
+      }}>
+        <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "var(--content-padding)" }}>
+          Alapadatok
+        </p>
 
-      <InputHolder text="Kérdés szám">
-        <input type="number" min={0} ref={questionCountRef} defaultValue={0} />
-      </InputHolder>
-
-      <InputHolder text="Kitöltési idő (perc)">
-        <input type="number" min={0} ref={timeRef} defaultValue={0} />
-      </InputHolder>
-
-      {type === "new" && (
-        <InputHolder text="Kategória">
-          <Select
-            options={categories.map((c) => ({ value: c.id, label: c.name }))}
-            styles={selectStyles}
-            placeholder="Válassz kategóriát"
-            onChange={(selected) => {
-              const val = (selected as { value: string } | null)?.value ?? null;
-              setSelectedCategoryId(val);
-              setSelectedTaskIds([]);
-              if (val) getTasks(val);
-              else setAvailableTasks([]);
-            }}
-          />
+        <InputHolder text="Teszt neve">
+          <input type="text" ref={nameRef} placeholder="Add meg a teszt nevét..." />
         </InputHolder>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--content-padding)" }}>
+          <InputHolder text="Kérdések száma">
+            <input type="number" min={0} ref={questionCountRef} defaultValue={0} />
+          </InputHolder>
+          <InputHolder text="Kitöltési idő (perc)">
+            <input type="number" min={0} ref={timeRef} defaultValue={0} />
+          </InputHolder>
+        </div>
+      </div>
+
+      {/* Category picker (only for new) */}
+      {type === "new" && (
+        <div style={{
+          padding: "var(--content-padding)",
+          border: "1px solid var(--border-color)",
+          borderRadius: "var(--border-radius)",
+          backgroundColor: "rgba(0,0,0,0.15)",
+          marginBottom: "var(--content-padding)",
+        }}>
+          <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "var(--content-padding)" }}>
+            Kategória kiválasztása
+          </p>
+
+          {categories.length === 0 ? (
+            <p style={{ color: "#475569", fontSize: "14px" }}>Nincs elérhető kategória.</p>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
+              {categories.map((cat) => {
+                const selected = selectedCategoryId === cat.id;
+                return (
+                  <div
+                    key={cat.id}
+                    onClick={() => selectCategory(cat.id)}
+                    style={{
+                      padding: "12px 14px",
+                      borderRadius: "var(--border-radius)",
+                      border: `1px solid ${selected ? "rgba(52,211,153,0.5)" : "var(--border-color)"}`,
+                      backgroundColor: selected ? "rgba(38,95,24,0.22)" : "var(--input-color)",
+                      borderTop: `3px solid ${selected ? "#34d399" : "transparent"}`,
+                      cursor: "pointer",
+                      userSelect: "none",
+                      transition: "border-color 0.15s ease, background-color 0.15s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <div style={{
+                      width: "32px",
+                      height: "32px",
+                      borderRadius: "8px",
+                      backgroundColor: selected ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.06)",
+                      border: `1px solid ${selected ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      <BiSolidCategory style={{ fontSize: "14px", color: selected ? "#34d399" : "#475569" }} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: "14px", fontWeight: selected ? 600 : 400, color: selected ? "#f1f5f9" : "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {cat.name}
+                      </p>
+                      {cat.description && (
+                        <p style={{ fontSize: "12px", color: "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {cat.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
+      {/* Task picker */}
       {availableTasks.length > 0 && (
-        <div style={{ margin: "var(--content-padding) 0" }}>
-          <p style={{ marginBottom: "var(--input-padding)", marginLeft: "var(--input-padding)" }}>
-            Rögzített feladatok ({selectedTaskIds.length} kiválasztva)
-          </p>
+        <div style={{
+          padding: "var(--content-padding)",
+          border: "1px solid var(--border-color)",
+          borderRadius: "var(--border-radius)",
+          backgroundColor: "rgba(0,0,0,0.15)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--content-padding)" }}>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.7px" }}>
+              Rögzített feladatok
+            </p>
+            <span style={{
+              fontSize: "12px",
+              padding: "2px 10px",
+              borderRadius: "999px",
+              backgroundColor: selectedTaskIds.length > 0 ? "rgba(38,95,24,0.25)" : "rgba(255,255,255,0.05)",
+              color: selectedTaskIds.length > 0 ? "#34d399" : "#64748b",
+              border: `1px solid ${selectedTaskIds.length > 0 ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
+            }}>
+              {selectedTaskIds.length} / {availableTasks.length} kiválasztva
+            </span>
+          </div>
+
           <div className="card-grid">
             {availableTasks.map((task) => {
               const selected = selectedTaskIds.includes(task.id);
+              const meta = TYPE_META[task.type];
               return (
                 <div
                   key={task.id}
-                  className="card"
                   onClick={() => toggleTask(task.id)}
                   style={{
+                    padding: "12px 14px",
+                    borderRadius: "var(--border-radius)",
+                    border: `1px solid ${selected ? "rgba(52,211,153,0.4)" : "var(--border-color)"}`,
+                    borderTop: `3px solid ${selected ? "#34d399" : "transparent"}`,
+                    backgroundColor: selected ? "rgba(38,95,24,0.18)" : "var(--input-color)",
                     cursor: "pointer",
-                    borderColor: selected ? "var(--button-background)" : undefined,
-                    backgroundColor: selected ? "rgba(38, 95, 24, 0.2)" : undefined,
                     userSelect: "none",
+                    transition: "border-color 0.15s ease, background-color 0.15s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
                   }}
                 >
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      color: selected ? "var(--button-background-hover)" : "gray",
-                      marginBottom: "var(--input-padding)",
-                    }}
-                  >
-                    {task.type}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
+                    <span style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      padding: "2px 8px",
+                      borderRadius: "999px",
+                      backgroundColor: meta.bg,
+                      color: meta.color,
+                      border: `1px solid ${meta.color}40`,
+                      whiteSpace: "nowrap",
+                    }}>
+                      {meta.label}
+                    </span>
+                    <div style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "50%",
+                      border: `2px solid ${selected ? "#34d399" : "#334155"}`,
+                      backgroundColor: selected ? "#34d399" : "transparent",
+                      flexShrink: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.15s ease",
+                    }}>
+                      {selected && <span style={{ fontSize: "10px", color: "#000", fontWeight: 700 }}>✓</span>}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: "14px", color: selected ? "#f1f5f9" : "#94a3b8", lineHeight: "1.4" }}>
+                    {task.description}
                   </p>
-                  <p>{task.description}</p>
                 </div>
               );
             })}
