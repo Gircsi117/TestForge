@@ -61,6 +61,8 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       const res = await ForgeAxios({ method: "GET", url: `/task/${categoryId}` });
       setAvailableTasks(res.data.tasks || []);
     } catch (error) {
+      console.log(error);
+      toast.error(getErrorMessage(error as Error));
       setAvailableTasks([]);
     }
   };
