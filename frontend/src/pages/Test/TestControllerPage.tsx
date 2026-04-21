@@ -25,6 +25,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   const nameRef = useRef<HTMLInputElement>(null);
   const questionCountRef = useRef<HTMLInputElement>(null);
+  const timeRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<SelectInstance<{ value: string }>>(null);
 
   const getCategories = async () => {
@@ -67,6 +68,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
     if (test) {
       nameRef.current!.value = test.name;
       questionCountRef.current!.value = test.questionCount.toString();
+      timeRef.current!.value = test.time.toString();
     }
   }, [test]);
 
@@ -74,6 +76,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
     try {
       const name = nameRef.current?.value;
       const questionCount = questionCountRef.current?.valueAsNumber || 0;
+      const time = timeRef.current?.valueAsNumber || 0;
       const categoryId = selectRef.current?.getValue()[0]?.value;
 
       if (!name || !categoryId) {
@@ -87,6 +90,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
         data: {
           name,
           questionCount,
+          time,
           categoryId,
         },
       });
@@ -103,6 +107,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
     try {
       const name = nameRef.current?.value;
       const questionCount = questionCountRef.current?.valueAsNumber || 0;
+      const time = timeRef.current?.valueAsNumber || 0;
 
       if (!name) {
         toast.error("Kérem töltse ki az összes mezőt!");
@@ -115,6 +120,7 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
         data: {
           name,
           questionCount,
+          time,
         },
       });
 
@@ -181,6 +187,10 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
       <InputHolder text="Kérdés szám">
         <input type="number" min={0} ref={questionCountRef} defaultValue={0} />
+      </InputHolder>
+
+      <InputHolder text="Kitöltési idő (perc)">
+        <input type="number" min={0} ref={timeRef} defaultValue={0} />
       </InputHolder>
 
       {type === "new" && (

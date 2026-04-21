@@ -47,6 +47,10 @@ const TestPage = () => {
               <h3>{test.name}</h3>
               <p>Kérdés szám: {test.questionCount}</p>
               <p>
+                Idő:{" "}
+                {`${String(Math.floor(test.time / 60)).padStart(2, "0")}:${String(test.time % 60).padStart(2, "0")}:00`}
+              </p>
+              <p>
                 Kategória: [
                 <Link
                   to={`/categories/edit/${test.category.id}`}

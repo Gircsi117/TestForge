@@ -4,6 +4,7 @@ export type Test = {
   id: string;
   name: string;
   questionCount: number;
+  time: number;
   categoryId: string;
   createdBy: string;
   createdAt: string;

@@ -20,6 +20,7 @@ export const TestTable = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     questionCount: integer("question_count").notNull().default(0),
+    time: integer("time").notNull().default(0),
     categoryId: uuid("category_id")
       .notNull()
       .references(() => CategoryTable.id, { onDelete: "cascade" }),
