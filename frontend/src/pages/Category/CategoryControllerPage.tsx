@@ -114,8 +114,6 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
           display: "flex",
           gap: "var(--input-padding)",
           justifyContent: "flex-end",
-          position: "sticky",
-          top: "0px",
         }}
       >
         {type === "new" && !category && (

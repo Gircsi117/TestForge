@@ -79,7 +79,27 @@ const TaskControllerPage = () => {
     }
   };
 
-  const updateTask = async () => {};
+  const updateTask = async () => {
+    const description = descriptionRef.current?.value;
+
+    try {
+      const res = await ForgeAxios({
+        method: "PUT",
+        url: `/task/${taskId}`,
+        data: {
+          description,
+          options,
+        },
+      });
+
+      if (res.data.success) {
+        toast.success("Feladat sikeresen módosítva!");
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error as Error));
+      console.error(error);
+    }
+  };
 
   const deleteTask = async () => {
     try {
