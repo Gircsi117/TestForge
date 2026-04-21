@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import db from "../database/db";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
 import {
   CreateTestArgs,
   TestTable,
@@ -10,11 +10,13 @@ import {
 } from "../database/models/test.model";
 import { NotFoundError } from "../modules/error.module";
 import { TaskTable } from "../database/models/task.model";
+import { TestTaskTable } from "../database/models/test-task.model";
+import { CategoryTable } from "../database/models/category.model";
 
 class TestController extends Controller {
   @Route("GET", "/")
   @Route.Auth()
-  async all(request: FastifyRequest, reply: FastifyReply) {
+  async all(request: FastifyRequest, _reply: FastifyReply) {
     const user = request.currentUser!;
 
     const tests = await db.query.TestTable.findMany({
@@ -29,38 +31,48 @@ class TestController extends Controller {
   @Route.Auth()
   async one(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
+    _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
 
     const test = await db.query.TestTable.findFirst({
       where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
-      with: { category: true },
+      with: {
+        category: true,
+        testTasks: { with: { task: true } },
+      },
     });
 
     if (!test) {
       throw new NotFoundError("Test not found!");
     }
 
-    return { success: true, test };
+    return {
+      success: true,
+      test: {
+        ...test,
+        tasks: test.testTasks.map((tt) => tt.task),
+        testTasks: undefined,
+      },
+    };
   }
 
   @Route("POST", "/")
   @Route.Auth()
   async create(
     request: FastifyRequest<{
-      Body: Omit<CreateTestArgs, "createdBy">;
+      Body: Omit<CreateTestArgs, "createdBy"> & { taskIds?: string[] };
     }>,
-    reply: FastifyReply,
+    _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
-    const { name, questionCount, categoryId } = request.body;
+    const { name, questionCount, categoryId, taskIds = [] } = request.body;
 
     const category = await db.query.CategoryTable.findFirst({
       where: and(
-        eq(TestTable.createdBy, user.id),
-        eq(TestTable.id, categoryId),
+        eq(CategoryTable.createdBy, user.id),
+        eq(CategoryTable.id, categoryId),
       ),
     });
 
@@ -85,6 +97,24 @@ class TestController extends Controller {
 
       if (!test) throw new Error("Test creation failed!");
 
+      if (taskIds.length > 0) {
+        const validTasks = await tx
+          .select({ id: TaskTable.id })
+          .from(TaskTable)
+          .where(
+            and(
+              eq(TaskTable.categoryId, categoryId),
+              inArray(TaskTable.id, taskIds),
+            ),
+          );
+
+        if (validTasks.length > 0) {
+          await tx.insert(TestTaskTable).values(
+            validTasks.map((t) => ({ testId: test.id, taskId: t.id })),
+          );
+        }
+      }
+
       return test;
     });
 
@@ -96,13 +126,14 @@ class TestController extends Controller {
   async update(
     request: FastifyRequest<{
       Params: { id: string };
-      Body: UpdateTestArgs;
+      Body: UpdateTestArgs & { taskIds?: string[] };
     }>,
-    reply: FastifyReply,
+    _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
-    const data = request.body;
+    const { taskIds, ...data } = request.body;
+
     const test = await db.query.TestTable.findFirst({
       where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
     });
@@ -124,6 +155,28 @@ class TestController extends Controller {
 
       if (!updatedTest) throw new Error("Test update failed!");
 
+      if (taskIds !== undefined) {
+        await tx.delete(TestTaskTable).where(eq(TestTaskTable.testId, id));
+
+        if (taskIds.length > 0) {
+          const validTasks = await tx
+            .select({ id: TaskTable.id })
+            .from(TaskTable)
+            .where(
+              and(
+                eq(TaskTable.categoryId, test.categoryId),
+                inArray(TaskTable.id, taskIds),
+              ),
+            );
+
+          if (validTasks.length > 0) {
+            await tx.insert(TestTaskTable).values(
+              validTasks.map((t) => ({ testId: id, taskId: t.id })),
+            );
+          }
+        }
+      }
+
       return updatedTest;
     });
 
@@ -138,7 +191,7 @@ class TestController extends Controller {
   @Route.Auth()
   async delete(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
+    _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
@@ -165,7 +218,7 @@ class TestController extends Controller {
   @Route.Auth()
   async practice(
     request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
+    _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
     const { id } = request.params;
@@ -178,13 +231,41 @@ class TestController extends Controller {
       throw new NotFoundError("Test not found!");
     }
 
-    const tasks = await db.query.TaskTable.findMany({
-      where: eq(TaskTable.categoryId, test.categoryId),
-      limit: test.questionCount > 0 ? test.questionCount : undefined,
-      orderBy: sql.raw("RANDOM()"),
+    const pinnedRows = await db.query.TestTaskTable.findMany({
+      where: eq(TestTaskTable.testId, id),
+      with: { task: true },
     });
 
-    return { success: true, tasks: tasks || [] };
+    const pinnedTasks = pinnedRows.map((row) => row.task);
+    const pinnedIds = pinnedTasks.map((t) => t.id);
+
+    const remaining =
+      test.questionCount > 0
+        ? Math.max(0, test.questionCount - pinnedTasks.length)
+        : undefined;
+
+    let randomTasks: typeof pinnedTasks = [];
+    if (remaining === undefined || remaining > 0) {
+      const whereClause =
+        pinnedIds.length > 0
+          ? and(
+              eq(TaskTable.categoryId, test.categoryId),
+              notInArray(TaskTable.id, pinnedIds),
+            )
+          : eq(TaskTable.categoryId, test.categoryId);
+
+      randomTasks = await db.query.TaskTable.findMany({
+        where: whereClause,
+        limit: remaining,
+        orderBy: sql`RANDOM()`,
+      });
+    }
+
+    const allTasks = [...pinnedTasks, ...randomTasks].sort(
+      () => Math.random() - 0.5,
+    );
+
+    return { success: true, tasks: allTasks };
   }
 }
 

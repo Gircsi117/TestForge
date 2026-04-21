@@ -1,4 +1,5 @@
 import type { Category } from "./category.type";
+import type { Task } from "./task.type";
 
 export type Test = {
   id: string;
@@ -11,4 +12,5 @@ export type Test = {
   updatedAt: string;
 
   category: Category;
+  tasks?: Task[];
 };
