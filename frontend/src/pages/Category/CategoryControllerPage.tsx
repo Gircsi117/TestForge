@@ -1,6 +1,6 @@
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ForgeAxios from "../../modules/axios.module";
-import { useEffect, useRef, useState } from "react";
 import type { Category } from "../../types/category.type";
 import Button from "../../components/button/Button";
 import { FaSave } from "react-icons/fa";
@@ -105,31 +105,42 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
     descriptionRef.current!.value = category.description;
   }, [category]);
 
+  const cardStyle: React.CSSProperties = {
+    padding: "var(--content-padding)",
+    border: "1px solid var(--border-color)",
+    borderRadius: "var(--border-radius)",
+    backgroundColor: "rgba(0,0,0,0.15)",
+    marginBottom: "var(--content-padding)",
+  };
+
+  const sectionTitleStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: 600,
+    color: "#64748b",
+    textTransform: "uppercase",
+    letterSpacing: "0.7px",
+    marginBottom: "var(--content-padding)",
+  };
+
   if (type === "edit" && !category) return <main>Loading...</main>;
 
   return (
-    <main>
-      <div
-        style={{
-          display: "flex",
-          gap: "var(--input-padding)",
-          justifyContent: "flex-end",
-        }}
-      >
+    <div className="page">
+      <div style={{ display: "flex", gap: "var(--input-padding)", justifyContent: "flex-end", marginBottom: "var(--content-padding)" }}>
         {type === "new" && !category && (
-          <Button icon={<FaSave />} onClick={addCategory}>
+          <Button icon={<FaSave />} onClick={addCategory} style={{ width: "auto" }}>
             Létrehozás
           </Button>
         )}
         {(type === "edit" || category) && (
           <>
-            <Button icon={<FaSave />} onClick={updateCategory}>
+            <Button icon={<FaSave />} onClick={updateCategory} style={{ width: "auto" }}>
               Módosítás
             </Button>
             <Button
               icon={<FaTrash />}
               onClick={deleteCategory}
-              style={{ backgroundColor: "red" }}
+              style={{ width: "auto", background: "linear-gradient(180deg,#b91c1c,#991b1b)", boxShadow: "0 1px 3px rgba(0,0,0,0.4)" }}
             >
               Törlés
             </Button>
@@ -137,16 +148,18 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
         )}
       </div>
 
-      <InputHolder text="Kategória neve">
-        <input type="text" ref={nameRef} />
-      </InputHolder>
-
-      <InputHolder text="Kategória leírása">
-        <textarea rows={5} ref={descriptionRef}></textarea>
-      </InputHolder>
+      <div style={cardStyle}>
+        <p style={sectionTitleStyle}>Alapadatok</p>
+        <InputHolder text="Kategória neve">
+          <input type="text" ref={nameRef} />
+        </InputHolder>
+        <InputHolder text="Kategória leírása">
+          <textarea rows={5} ref={descriptionRef}></textarea>
+        </InputHolder>
+      </div>
 
       {category && <Tasks categoryId={category.id} />}
-    </main>
+    </div>
   );
 };
 

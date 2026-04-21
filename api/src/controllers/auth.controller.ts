@@ -9,6 +9,7 @@ import Server from "../modules/server.module";
 
 type LoginBody = Pick<User, "email" | "password">;
 type RegisterBody = CreateUserArgs;
+type UpdateProfileBody = { name?: string; currentPassword?: string; newPassword?: string };
 
 export const COOKIE_LIFETIME = 30 * 24 * 3600 * 1000;
 
@@ -118,6 +119,53 @@ class AuthController extends Controller {
 
     reply.status(200);
     return { success: true, user: { ...user, password: undefined } };
+  }
+
+  @Route("PUT", "/profile")
+  @Route.Auth()
+  async updateProfile(
+    request: FastifyRequest<{ Body: UpdateProfileBody }>,
+    reply: FastifyReply,
+  ) {
+    const currentUser = request.currentUser!;
+    const { name, currentPassword, newPassword } = request.body;
+
+    const updates: Partial<{ name: string; password: string }> = {};
+
+    if (name !== undefined) {
+      if (!name.trim()) throw new MissingArgumentError("A név nem lehet üres!");
+      updates.name = name.trim();
+    }
+
+    if (newPassword !== undefined) {
+      if (!currentPassword) throw new MissingArgumentError("Add meg a jelenlegi jelszót!");
+
+      const [dbUser] = await db
+        .select()
+        .from(UserTable)
+        .where(eq(UserTable.id, currentUser.id))
+        .limit(1);
+
+      const isValid = await Server.app.bcrypt.compare(currentPassword, dbUser.password);
+      if (!isValid) throw new NotFoundError("A jelenlegi jelszó helytelen!");
+
+      if (newPassword.length < 6) throw new MissingArgumentError("Az új jelszónak legalább 6 karakter hosszúnak kell lennie!");
+
+      updates.password = await Server.app.bcrypt.hash(newPassword);
+    }
+
+    if (Object.keys(updates).length === 0) {
+      throw new MissingArgumentError("Nincs módosítandó adat!");
+    }
+
+    const [updatedUser] = await db
+      .update(UserTable)
+      .set(updates)
+      .where(eq(UserTable.id, currentUser.id))
+      .returning();
+
+    reply.status(200);
+    return { success: true, user: { ...updatedUser, password: undefined } };
   }
 
   @Route("GET", "/logout")

@@ -36,7 +36,10 @@ const TestPage = () => {
   return (
     <div className="page">
       <Link to="/tests/new" style={{ display: "inline-block" }}>
-        <Button icon={<FaPlus />} style={{ marginBottom: "var(--content-padding)" }}>
+        <Button
+          icon={<FaPlus />}
+          style={{ marginBottom: "var(--content-padding)" }}
+        >
           Új Teszt
         </Button>
       </Link>
@@ -48,13 +51,31 @@ const TestPage = () => {
             style={{ borderTop: "3px solid var(--button-background)", gap: 0 }}
           >
             <div className="card-content">
-              <h3 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "12px" }}>
+              <h3
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  marginBottom: "12px",
+                }}
+              >
                 {test.name}
               </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <FaListUl style={{ color: "#60a5fa", fontSize: "13px", flexShrink: 0 }} />
-                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>Kérdések</span>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <FaListUl
+                    style={{
+                      color: "#60a5fa",
+                      fontSize: "13px",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>
+                    Kérdések
+                  </span>
                   <span
                     style={{
                       marginLeft: "auto",
@@ -67,12 +88,24 @@ const TestPage = () => {
                       border: "1px solid rgba(96,165,250,0.25)",
                     }}
                   >
-                    {test.questionCount} db
+                    {test.questionCount > 0
+                      ? `${test.questionCount} db`
+                      : "Összes"}
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <FaClock style={{ color: "#fb923c", fontSize: "13px", flexShrink: 0 }} />
-                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>Időlimit</span>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <FaClock
+                    style={{
+                      color: "#fb923c",
+                      fontSize: "13px",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>
+                    Időlimit
+                  </span>
                   <span
                     style={{
                       marginLeft: "auto",
@@ -80,7 +113,10 @@ const TestPage = () => {
                       fontWeight: 600,
                       padding: "1px 10px",
                       borderRadius: "999px",
-                      backgroundColor: test.time > 0 ? "rgba(251,146,60,0.12)" : "rgba(255,255,255,0.05)",
+                      backgroundColor:
+                        test.time > 0
+                          ? "rgba(251,146,60,0.12)"
+                          : "rgba(255,255,255,0.05)",
                       color: test.time > 0 ? "#fb923c" : "#64748b",
                       border: `1px solid ${test.time > 0 ? "rgba(251,146,60,0.25)" : "rgba(255,255,255,0.08)"}`,
                     }}
@@ -88,9 +124,19 @@ const TestPage = () => {
                     {test.time > 0 ? formatTime(test.time) : "nincs"}
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <FaTag style={{ color: "#34d399", fontSize: "13px", flexShrink: 0 }} />
-                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>Kategória</span>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <FaTag
+                    style={{
+                      color: "#34d399",
+                      fontSize: "13px",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontSize: "14px", color: "#94a3b8" }}>
+                    Kategória
+                  </span>
                   <Link
                     to={`/categories/edit/${test.category.id}`}
                     style={{

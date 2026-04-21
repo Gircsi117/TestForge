@@ -6,6 +6,7 @@ interface AuthState {
   user: User | null;
   login: (user: User) => void;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -13,4 +14,5 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   login: (user: User) => set({ isAuth: true, user }),
   logout: () => set({ isAuth: false, user: null }),
+  updateUser: (user: User) => set({ user }),
 }));

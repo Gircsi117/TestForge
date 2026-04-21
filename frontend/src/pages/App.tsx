@@ -15,6 +15,7 @@ import TestPage from "./Test/TestPage";
 import TestControllerPage from "./Test/TestControllerPage";
 import PracticePage from "./Test/PracticePage";
 import TaskControllerPage from "./Task/TaskControllerPage";
+import ProfilePage from "./Profile/ProfilePage";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
@@ -145,6 +146,15 @@ function App() {
               element={
                 <Protection auth error>
                   <PracticePage />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="profile"
+              element={
+                <Protection auth error>
+                  <ProfilePage />
                 </Protection>
               }
             />
