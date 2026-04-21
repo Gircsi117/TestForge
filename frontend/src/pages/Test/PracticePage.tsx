@@ -19,6 +19,7 @@ import PickTask from "./Tasks/PickTask";
 import SortTask from "./Tasks/SortTask";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { FaSave } from "react-icons/fa";
+import { MdTimer } from "react-icons/md";
 
 const formatTime = (seconds: number) => {
   const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
@@ -161,24 +162,6 @@ const PracticePage = () => {
 
   return (
     <div className="page">
-      {hasTimer && (
-        <div
-          style={{
-            position: "fixed",
-            top: "var(--content-padding)",
-            right: "var(--content-padding)",
-            backgroundColor: "var(--input-color)",
-            border: "1px solid var(--border-color)",
-            borderRadius: "var(--border-radius)",
-            padding: "4px 12px",
-            fontVariantNumeric: "tabular-nums",
-            zIndex: 100,
-          }}
-        >
-          {formatTime(timeLeft!)}
-        </div>
-      )}
-
       {isDone && score !== null && (
         <div
           style={{
@@ -209,13 +192,24 @@ const PracticePage = () => {
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
             marginBottom: "4px",
           }}
         >
           <span style={{ fontSize: "14px", color: "gray" }}>Megválaszolt feladatok</span>
-          <span style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums" }}>
-            {answers.size}/{tasks.length}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums" }}>
+              {answers.size}/{tasks.length}
+            </span>
+            {hasTimer && (
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: timeLeft! <= 60 ? "#ef4444" : "inherit" }}>
+                <MdTimer style={{ fontSize: "16px" }} />
+                <span style={{ fontSize: "14px", fontVariantNumeric: "tabular-nums", fontWeight: 500 }}>
+                  {formatTime(timeLeft!)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
         <div
           style={{
@@ -254,10 +248,10 @@ const PracticePage = () => {
               key={task.id}
               style={{
                 minWidth: "40px",
-                backgroundColor: isCurrent
-                  ? "#2563eb"
+                background: isCurrent
+                  ? "linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)"
                   : isAnswered
-                    ? "#1e3a5f"
+                    ? "linear-gradient(180deg, #1e40af 0%, #1e3a5f 100%)"
                     : "var(--input-color)",
                 outline: isCurrent ? "2px solid #60a5fa" : "none",
                 outlineOffset: "2px",
