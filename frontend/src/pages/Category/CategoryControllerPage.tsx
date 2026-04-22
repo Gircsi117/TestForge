@@ -9,6 +9,7 @@ import InputHolder from "../../components/input/InputHolder";
 import { getErrorMessage } from "../../modules/error.module";
 import { toast } from "react-toastify";
 import Tasks from "../Task/Tasks";
+import Section from "../../components/section/Section";
 
 type Props = {
   type: "new" | "edit";
@@ -109,21 +110,40 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
 
   return (
     <div className="page">
-      <div style={{ display: "flex", gap: "var(--input-padding)", justifyContent: "flex-end", marginBottom: "var(--content-padding)" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--input-padding)",
+          justifyContent: "flex-end",
+          marginBottom: "var(--content-padding)",
+        }}
+      >
         {type === "new" && !category && (
-          <Button icon={<FaSave />} onClick={addCategory} style={{ width: "auto" }}>
+          <Button
+            icon={<FaSave />}
+            onClick={addCategory}
+            style={{ width: "auto" }}
+          >
             Létrehozás
           </Button>
         )}
         {(type === "edit" || category) && (
           <>
-            <Button icon={<FaSave />} onClick={updateCategory} style={{ width: "auto" }}>
+            <Button
+              icon={<FaSave />}
+              onClick={updateCategory}
+              style={{ width: "auto" }}
+            >
               Módosítás
             </Button>
             <Button
               icon={<FaTrash />}
               onClick={deleteCategory}
-              style={{ width: "auto", background: "linear-gradient(180deg,#b91c1c,#991b1b)", boxShadow: "0 1px 3px rgba(0,0,0,0.4)" }}
+              style={{
+                width: "auto",
+                background: "linear-gradient(180deg,#b91c1c,#991b1b)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+              }}
             >
               Törlés
             </Button>
@@ -131,15 +151,14 @@ const CategoryControllerPage: React.FC<Props> = ({ type }) => {
         )}
       </div>
 
-      <div className="section-card">
-        <p className="section-title">Alapadatok</p>
+      <Section sectionTitle="Alapadatok">
         <InputHolder text="Kategória neve">
           <input type="text" ref={nameRef} />
         </InputHolder>
         <InputHolder text="Kategória leírása">
           <textarea rows={5} ref={descriptionRef}></textarea>
         </InputHolder>
-      </div>
+      </Section>
 
       {category && <Tasks categoryId={category.id} />}
     </div>

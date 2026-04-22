@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/button/Button";
 import { FaPencilAlt } from "react-icons/fa";
 import { TASK_TYPE_META } from "../../constants/taskTypeMeta";
+import Label from "../../components/label/Label";
 
 type Props = {
   categoryId: string;
@@ -184,21 +185,9 @@ const TaskCard: React.FC<Props> = ({ categoryId, task }) => {
         <h3 style={{ fontSize: "16px", lineHeight: "1.4", flex: 1 }}>
           {task.description}
         </h3>
-        <span
-          style={{
-            fontSize: "11px",
-            fontWeight: "600",
-            padding: "2px 8px",
-            borderRadius: "999px",
-            backgroundColor: meta.bg,
-            color: meta.color,
-            border: `1px solid ${meta.color}40`,
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-          }}
-        >
+        <Label background={meta.bg} color={meta.color}>
           {meta.label}
-        </span>
+        </Label>
       </div>
 
       <div style={{ flex: 1, marginBottom: "12px" }}>{getOptions()}</div>

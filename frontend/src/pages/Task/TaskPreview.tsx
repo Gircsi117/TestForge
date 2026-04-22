@@ -1,5 +1,13 @@
+import Label from "../../components/label/Label";
 import { TASK_TYPE_META } from "../../constants/taskTypeMeta";
-import { TaskType, type EssayOptions, type ImportTask, type MatchOptions, type PickOptions, type SortOptions } from "../../types/task.type";
+import {
+  TaskType,
+  type EssayOptions,
+  type ImportTask,
+  type MatchOptions,
+  type PickOptions,
+  type SortOptions,
+} from "../../types/task.type";
 
 const TaskPreview: React.FC<{ task: ImportTask; index: number }> = ({
   task,
@@ -77,16 +85,9 @@ const TaskPreview: React.FC<{ task: ImportTask; index: number }> = ({
       <div className="import-preview-card-header">
         <span className="task-index">#{index + 1}</span>
         <span className="task-description">{task.description}</span>
-        <span
-          className="task-type-badge"
-          style={{
-            backgroundColor: meta.bg,
-            color: meta.color,
-            borderColor: `${meta.color}40`,
-          }}
-        >
+        <Label background={meta.bg} color={meta.color}>
           {meta.label}
-        </span>
+        </Label>
       </div>
       {renderOptions()}
     </div>

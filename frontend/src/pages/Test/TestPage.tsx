@@ -8,6 +8,7 @@ import Button from "../../components/button/Button";
 import { FaClock, FaListUl, FaPen, FaPlus } from "react-icons/fa";
 import { FaGear, FaTag, FaArrowLeft } from "react-icons/fa6";
 import { formatTestDuration } from "../../modules/time.module";
+import Label from "../../components/label/Label";
 
 const TestPage = () => {
   const [tests, setTests] = useState<Test[]>([]);
@@ -69,21 +70,15 @@ const TestPage = () => {
                   <span style={{ fontSize: "14px", color: "#94a3b8" }}>
                     Kérdések
                   </span>
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      padding: "1px 10px",
-                      borderRadius: "999px",
-                      backgroundColor: "rgba(96,165,250,0.12)",
-                      color: "#60a5fa",
-                      border: "1px solid rgba(96,165,250,0.25)",
-                    }}
-                  >
-                    {test.questionCount > 0
-                      ? `${test.questionCount} db`
-                      : "Összes"}
+                  <span style={{ marginLeft: "auto" }}>
+                    <Label
+                      background={"rgba(96,165,250,0.12)"}
+                      color={"#60a5fa"}
+                    >
+                      {test.questionCount > 0
+                        ? `${test.questionCount} db`
+                        : "Összes"}
+                    </Label>
                   </span>
                 </div>
                 <div
@@ -99,22 +94,17 @@ const TestPage = () => {
                   <span style={{ fontSize: "14px", color: "#94a3b8" }}>
                     Időlimit
                   </span>
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      padding: "1px 10px",
-                      borderRadius: "999px",
-                      backgroundColor:
+                  <span style={{ marginLeft: "auto" }}>
+                    <Label
+                      background={
                         test.time > 0
                           ? "rgba(251,146,60,0.12)"
-                          : "rgba(255,255,255,0.05)",
-                      color: test.time > 0 ? "#fb923c" : "#64748b",
-                      border: `1px solid ${test.time > 0 ? "rgba(251,146,60,0.25)" : "rgba(255,255,255,0.08)"}`,
-                    }}
-                  >
-                    {test.time > 0 ? formatTestDuration(test.time) : "nincs"}
+                          : "rgba(255,255,255,0.05)"
+                      }
+                      color={test.time > 0 ? "#fb923c" : "#64748b"}
+                    >
+                      {test.time > 0 ? formatTestDuration(test.time) : "Nincs"}
+                    </Label>
                   </span>
                 </div>
                 <div
@@ -134,17 +124,12 @@ const TestPage = () => {
                     to={`/categories/edit/${test.category.id}`}
                     style={{
                       marginLeft: "auto",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      padding: "1px 10px",
-                      borderRadius: "999px",
-                      backgroundColor: "rgba(52,211,153,0.12)",
-                      color: "#34d399",
-                      border: "1px solid rgba(52,211,153,0.25)",
                       textDecoration: "none",
                     }}
                   >
-                    {test.category.name}
+                    <Label background="rgba(52,211,153,0.12)" color="#34d399">
+                      {test.category.name}
+                    </Label>
                   </Link>
                 </div>
                 <div
@@ -160,21 +145,17 @@ const TestPage = () => {
                   <span style={{ fontSize: "14px", color: "#94a3b8" }}>
                     Visszalépés
                   </span>
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      padding: "1px 10px",
-                      borderRadius: "999px",
-                      backgroundColor: test.allowBack
-                        ? "rgba(167,139,250,0.12)"
-                        : "rgba(255,255,255,0.05)",
-                      color: test.allowBack ? "#a78bfa" : "#64748b",
-                      border: `1px solid ${test.allowBack ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)"}`,
-                    }}
-                  >
-                    {test.allowBack ? "Engedélyezett" : "Tiltott"}
+                  <span style={{ marginLeft: "auto" }}>
+                    <Label
+                      background={
+                        test.allowBack
+                          ? "rgba(167,139,250,0.12)"
+                          : "rgba(255,255,255,0.05)"
+                      }
+                      color={test.allowBack ? "#a78bfa" : "#64748b"}
+                    >
+                      {test.allowBack ? "Engedélyezett" : "Tiltott"}
+                    </Label>
                   </span>
                 </div>
               </div>

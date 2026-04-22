@@ -11,6 +11,7 @@ import { FaSave, FaTrash } from "react-icons/fa";
 import SortTask from "./TaskOptions/SortTask";
 import MatchTask from "./TaskOptions/MatchTask";
 import EssayTask from "./TaskOptions/EssayTask";
+import Section from "../../components/section/Section";
 
 const TaskControllerPage = () => {
   const { categoryId = "", taskId = "" } = useParams();
@@ -180,7 +181,7 @@ const TaskControllerPage = () => {
         )}
       </div>
 
-      <div className="section-card">
+      <Section>
         {!isEdit() && (
           <InputHolder text="Feladat típusa">
             <select
@@ -203,9 +204,9 @@ const TaskControllerPage = () => {
         <InputHolder text="Feladat leírása">
           <textarea rows={5} ref={descriptionRef}></textarea>
         </InputHolder>
-      </div>
+      </Section>
 
-      <div className="section-card">
+      <Section>
         {type === TaskType.SINGLE_PICK && (
           <PickTask type={type} options={options} setOptions={setOptions} />
         )}
@@ -221,7 +222,7 @@ const TaskControllerPage = () => {
         {type === TaskType.ESSAY && (
           <EssayTask options={options} setOptions={setOptions} />
         )}
-      </div>
+      </Section>
     </main>
   );
 };

@@ -11,6 +11,8 @@ import type { Test } from "../../types/test.type";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidCategory } from "react-icons/bi";
 import { TASK_TYPE_META } from "../../constants/taskTypeMeta";
+import Section from "../../components/section/Section";
+import Label from "../../components/label/Label";
 
 type Props = {
   type: "new" | "edit";
@@ -21,7 +23,9 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
   const navigate = useNavigate();
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
   const [test, setTest] = useState<Test | null>(null);
   const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
   const [selectedTaskIds, setSelectedTaskIds] = useState<string[]>([]);
@@ -52,7 +56,10 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   const getTasks = async (categoryId: string) => {
     try {
-      const res = await ForgeAxios({ method: "GET", url: `/task/${categoryId}` });
+      const res = await ForgeAxios({
+        method: "GET",
+        url: `/task/${categoryId}`,
+      });
       setAvailableTasks(res.data.tasks || []);
     } catch (error) {
       console.log(error);
@@ -80,7 +87,9 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   const toggleTask = (taskId: string) => {
     setSelectedTaskIds((prev) =>
-      prev.includes(taskId) ? prev.filter((i) => i !== taskId) : [...prev, taskId],
+      prev.includes(taskId)
+        ? prev.filter((i) => i !== taskId)
+        : [...prev, taskId],
     );
   };
 
@@ -105,7 +114,14 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       const res = await ForgeAxios({
         method: "POST",
         url: "/test",
-        data: { name, questionCount, time, allowBack, categoryId: selectedCategoryId, taskIds: selectedTaskIds },
+        data: {
+          name,
+          questionCount,
+          time,
+          allowBack,
+          categoryId: selectedCategoryId,
+          taskIds: selectedTaskIds,
+        },
       });
 
       toast.success(res.data.message || "Teszt sikeresen létrehozva!");
@@ -129,7 +145,13 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       const res = await ForgeAxios({
         method: "PUT",
         url: `/test/${id}`,
-        data: { name, questionCount, time, allowBack, taskIds: selectedTaskIds },
+        data: {
+          name,
+          questionCount,
+          time,
+          allowBack,
+          taskIds: selectedTaskIds,
+        },
       });
 
       toast.success(res.data.message || "Teszt sikeresen módosítva!");
@@ -154,20 +176,42 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   return (
     <div className="page">
-
       {/* Action bar */}
-      <div style={{ display: "flex", gap: "var(--input-padding)", justifyContent: "flex-end", marginBottom: "var(--content-padding)" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--input-padding)",
+          justifyContent: "flex-end",
+          marginBottom: "var(--content-padding)",
+        }}
+      >
         {type === "new" && (
-          <Button icon={<FaSave />} onClick={createTest} style={{ width: "auto" }}>
+          <Button
+            icon={<FaSave />}
+            onClick={createTest}
+            style={{ width: "auto" }}
+          >
             Létrehozás
           </Button>
         )}
         {type === "edit" && (
           <>
-            <Button icon={<FaSave />} onClick={updateTest} style={{ width: "auto" }}>
+            <Button
+              icon={<FaSave />}
+              onClick={updateTest}
+              style={{ width: "auto" }}
+            >
               Módosítás
             </Button>
-            <Button icon={<FaTrash />} onClick={deleteTest} style={{ width: "auto", background: "linear-gradient(180deg,#b91c1c,#991b1b)", boxShadow: "0 1px 3px rgba(0,0,0,0.4)" }}>
+            <Button
+              icon={<FaTrash />}
+              onClick={deleteTest}
+              style={{
+                width: "auto",
+                background: "linear-gradient(180deg,#b91c1c,#991b1b)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+              }}
+            >
               Törlés
             </Button>
           </>
@@ -175,18 +219,29 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
       </div>
 
       {/* Form section */}
-      <div className="section-card">
-        <p className="section-title">
-          Alapadatok
-        </p>
-
+      <Section sectionTitle="Alapadatok">
         <InputHolder text="Teszt neve">
-          <input type="text" ref={nameRef} placeholder="Add meg a teszt nevét..." />
+          <input
+            type="text"
+            ref={nameRef}
+            placeholder="Add meg a teszt nevét..."
+          />
         </InputHolder>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--content-padding)" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "var(--content-padding)",
+          }}
+        >
           <InputHolder text="Kérdések száma">
-            <input type="number" min={0} ref={questionCountRef} defaultValue={0} />
+            <input
+              type="number"
+              min={0}
+              ref={questionCountRef}
+              defaultValue={0}
+            />
           </InputHolder>
           <InputHolder text="Kitöltési idő (perc)">
             <input type="number" min={0} ref={timeRef} defaultValue={0} />
@@ -202,54 +257,73 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
             padding: "12px 14px",
             borderRadius: "var(--border-radius)",
             border: `1px solid ${allowBack ? "rgba(52,211,153,0.4)" : "var(--border-color)"}`,
-            backgroundColor: allowBack ? "rgba(38,95,24,0.18)" : "var(--input-color)",
+            backgroundColor: allowBack
+              ? "rgba(38,95,24,0.18)"
+              : "var(--input-color)",
             cursor: "pointer",
             userSelect: "none",
             transition: "border-color 0.15s ease, background-color 0.15s ease",
           }}
         >
           <div>
-            <p style={{ fontSize: "14px", fontWeight: 600, color: allowBack ? "#f1f5f9" : "#94a3b8", marginBottom: "2px" }}>
+            <p
+              style={{
+                fontSize: "14px",
+                fontWeight: 600,
+                color: allowBack ? "#f1f5f9" : "#94a3b8",
+                marginBottom: "2px",
+              }}
+            >
               Visszalépés engedélyezése
             </p>
             <p style={{ fontSize: "12px", color: "#475569" }}>
-              {allowBack ? "A kitöltő visszatérhet a már megválaszolt kérdésekre" : "A kitöltő nem léphet vissza a korábbi kérdésekre"}
+              {allowBack
+                ? "A kitöltő visszatérhet a már megválaszolt kérdésekre"
+                : "A kitöltő nem léphet vissza a korábbi kérdésekre"}
             </p>
           </div>
-          <div style={{
-            width: "44px",
-            height: "24px",
-            borderRadius: "999px",
-            backgroundColor: allowBack ? "#34d399" : "#334155",
-            position: "relative",
-            flexShrink: 0,
-            transition: "background-color 0.2s ease",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: "3px",
-              left: allowBack ? "23px" : "3px",
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              backgroundColor: "#fff",
-              transition: "left 0.2s ease",
-            }} />
+          <div
+            style={{
+              width: "44px",
+              height: "24px",
+              borderRadius: "999px",
+              backgroundColor: allowBack ? "#34d399" : "#334155",
+              position: "relative",
+              flexShrink: 0,
+              transition: "background-color 0.2s ease",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "3px",
+                left: allowBack ? "23px" : "3px",
+                width: "18px",
+                height: "18px",
+                borderRadius: "50%",
+                backgroundColor: "#fff",
+                transition: "left 0.2s ease",
+              }}
+            />
           </div>
         </div>
-      </div>
+      </Section>
 
       {/* Category picker (only for new) */}
       {type === "new" && (
-        <div className="section-card">
-          <p className="section-title">
-            Kategória kiválasztása
-          </p>
-
+        <Section sectionTitle="Kategória kiválasztása">
           {categories.length === 0 ? (
-            <p style={{ color: "#475569", fontSize: "14px" }}>Nincs elérhető kategória.</p>
+            <p style={{ color: "#475569", fontSize: "14px" }}>
+              Nincs elérhető kategória.
+            </p>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "10px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "10px",
+              }}
+            >
               {categories.map((cat) => {
                 const selected = selectedCategoryId === cat.id;
                 return (
@@ -260,35 +334,64 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
                       padding: "12px 14px",
                       borderRadius: "var(--border-radius)",
                       border: `1px solid ${selected ? "rgba(52,211,153,0.5)" : "var(--border-color)"}`,
-                      backgroundColor: selected ? "rgba(38,95,24,0.22)" : "var(--input-color)",
+                      backgroundColor: selected
+                        ? "rgba(38,95,24,0.22)"
+                        : "var(--input-color)",
                       borderTop: `3px solid ${selected ? "#34d399" : "transparent"}`,
                       cursor: "pointer",
                       userSelect: "none",
-                      transition: "border-color 0.15s ease, background-color 0.15s ease",
+                      transition:
+                        "border-color 0.15s ease, background-color 0.15s ease",
                       display: "flex",
                       alignItems: "center",
                       gap: "10px",
                     }}
                   >
-                    <div style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "8px",
-                      backgroundColor: selected ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.06)",
-                      border: `1px solid ${selected ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}>
-                      <BiSolidCategory style={{ fontSize: "14px", color: selected ? "#34d399" : "#475569" }} />
+                    <div
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "8px",
+                        backgroundColor: selected
+                          ? "rgba(52,211,153,0.2)"
+                          : "rgba(255,255,255,0.06)",
+                        border: `1px solid ${selected ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <BiSolidCategory
+                        style={{
+                          fontSize: "14px",
+                          color: selected ? "#34d399" : "#475569",
+                        }}
+                      />
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: "14px", fontWeight: selected ? 600 : 400, color: selected ? "#f1f5f9" : "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: selected ? 600 : 400,
+                          color: selected ? "#f1f5f9" : "#94a3b8",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {cat.name}
                       </p>
                       {cat.description && (
-                        <p style={{ fontSize: "12px", color: "#475569", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <p
+                          style={{
+                            fontSize: "12px",
+                            color: "#475569",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {cat.description}
                         </p>
                       )}
@@ -298,24 +401,36 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
               })}
             </div>
           )}
-        </div>
+        </Section>
       )}
 
       {/* Task picker */}
       {availableTasks.length > 0 && (
-        <div className="section-card">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--content-padding)" }}>
+        <Section>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "var(--content-padding)",
+            }}
+          >
             <p className="section-title" style={{ marginBottom: 0 }}>
               Rögzített feladatok
             </p>
-            <span style={{
-              fontSize: "12px",
-              padding: "2px 10px",
-              borderRadius: "999px",
-              backgroundColor: selectedTaskIds.length > 0 ? "rgba(38,95,24,0.25)" : "rgba(255,255,255,0.05)",
-              color: selectedTaskIds.length > 0 ? "#34d399" : "#64748b",
-              border: `1px solid ${selectedTaskIds.length > 0 ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
-            }}>
+            <span
+              style={{
+                fontSize: "12px",
+                padding: "2px 10px",
+                borderRadius: "999px",
+                backgroundColor:
+                  selectedTaskIds.length > 0
+                    ? "rgba(38,95,24,0.25)"
+                    : "rgba(255,255,255,0.05)",
+                color: selectedTaskIds.length > 0 ? "#34d399" : "#64748b",
+                border: `1px solid ${selectedTaskIds.length > 0 ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.08)"}`,
+              }}
+            >
               {selectedTaskIds.length} / {availableTasks.length} kiválasztva
             </span>
           </div>
@@ -333,51 +448,70 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
                     borderRadius: "var(--border-radius)",
                     border: `1px solid ${selected ? "rgba(52,211,153,0.4)" : "var(--border-color)"}`,
                     borderTop: `3px solid ${selected ? "#34d399" : "transparent"}`,
-                    backgroundColor: selected ? "rgba(38,95,24,0.18)" : "var(--input-color)",
+                    backgroundColor: selected
+                      ? "rgba(38,95,24,0.18)"
+                      : "var(--input-color)",
                     cursor: "pointer",
                     userSelect: "none",
-                    transition: "border-color 0.15s ease, background-color 0.15s ease",
+                    transition:
+                      "border-color 0.15s ease, background-color 0.15s ease",
                     display: "flex",
                     flexDirection: "column",
                     gap: "8px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                    <span style={{
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      padding: "2px 8px",
-                      borderRadius: "999px",
-                      backgroundColor: meta.bg,
-                      color: meta.color,
-                      border: `1px solid ${meta.color}40`,
-                      whiteSpace: "nowrap",
-                    }}>
-                      {meta.label}
-                    </span>
-                    <div style={{
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      border: `2px solid ${selected ? "#34d399" : "#334155"}`,
-                      backgroundColor: selected ? "#34d399" : "transparent",
-                      flexShrink: 0,
+                  <div
+                    style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      transition: "all 0.15s ease",
-                    }}>
-                      {selected && <span style={{ fontSize: "10px", color: "#000", fontWeight: 700 }}>✓</span>}
+                      justifyContent: "space-between",
+                      gap: "8px",
+                    }}
+                  >
+                    <Label background={meta.bg} color={meta.color}>
+                      {meta.label}
+                    </Label>
+                    <div
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: `2px solid ${selected ? "#34d399" : "#334155"}`,
+                        backgroundColor: selected ? "#34d399" : "transparent",
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      {selected && (
+                        <span
+                          style={{
+                            fontSize: "10px",
+                            color: "#000",
+                            fontWeight: 700,
+                          }}
+                        >
+                          ✓
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <p style={{ fontSize: "14px", color: selected ? "#f1f5f9" : "#94a3b8", lineHeight: "1.4" }}>
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      color: selected ? "#f1f5f9" : "#94a3b8",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     {task.description}
                   </p>
                 </div>
               );
             })}
           </div>
-        </div>
+        </Section>
       )}
     </div>
   );

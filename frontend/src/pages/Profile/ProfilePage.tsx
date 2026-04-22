@@ -7,6 +7,7 @@ import Button from "../../components/button/Button";
 import InputHolder from "../../components/input/InputHolder";
 import { FaSave } from "react-icons/fa";
 import type { User } from "../../types/user.type";
+import Section from "../../components/section/Section";
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuthStore();
@@ -24,7 +25,11 @@ const ProfilePage = () => {
     }
 
     try {
-      const res = await ForgeAxios({ method: "PUT", url: "/auth/profile", data: { name } });
+      const res = await ForgeAxios({
+        method: "PUT",
+        url: "/auth/profile",
+        data: { name },
+      });
       updateUser(res.data.user as User);
       toast.success("Név sikeresen módosítva!");
     } catch (error) {
@@ -65,36 +70,74 @@ const ProfilePage = () => {
 
   return (
     <div className="page">
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--content-padding)", maxWidth: "480px", margin: "0 auto" }}>
-        <div className="section-card">
-          <p className="section-title">Névmódosítás</p>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--content-padding)",
+          maxWidth: "480px",
+          margin: "0 auto",
+        }}
+      >
+        <Section sectionTitle="Névmódosítás">
           <InputHolder text="Teljes név">
             <input type="text" ref={nameRef} defaultValue={user?.name} />
           </InputHolder>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--input-padding)" }}>
-            <Button icon={<FaSave />} onClick={handleNameUpdate} style={{ width: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "var(--input-padding)",
+            }}
+          >
+            <Button
+              icon={<FaSave />}
+              onClick={handleNameUpdate}
+              style={{ width: "auto" }}
+            >
               Mentés
             </Button>
           </div>
-        </div>
+        </Section>
 
-        <div className="section-card">
-          <p className="section-title">Jelszóváltoztatás</p>
+        <Section sectionTitle="Jelszó módosítás">
           <InputHolder text="Jelenlegi jelszó">
-            <input type="password" ref={currentPasswordRef} placeholder="••••••••" />
+            <input
+              type="password"
+              ref={currentPasswordRef}
+              placeholder="••••••••"
+            />
           </InputHolder>
           <InputHolder text="Új jelszó">
-            <input type="password" ref={newPasswordRef} placeholder="••••••••" />
+            <input
+              type="password"
+              ref={newPasswordRef}
+              placeholder="••••••••"
+            />
           </InputHolder>
           <InputHolder text="Új jelszó megerősítése">
-            <input type="password" ref={confirmPasswordRef} placeholder="••••••••" />
+            <input
+              type="password"
+              ref={confirmPasswordRef}
+              placeholder="••••••••"
+            />
           </InputHolder>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--input-padding)" }}>
-            <Button icon={<FaSave />} onClick={handlePasswordUpdate} style={{ width: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "var(--input-padding)",
+            }}
+          >
+            <Button
+              icon={<FaSave />}
+              onClick={handlePasswordUpdate}
+              style={{ width: "auto" }}
+            >
               Mentés
             </Button>
           </div>
-        </div>
+        </Section>
       </div>
     </div>
   );
