@@ -9,7 +9,7 @@ import {
   UpdateTestArgs,
 } from "../database/models/test.model";
 import { NotFoundError } from "../modules/error.module";
-import { TaskTable } from "../database/models/task.model";
+import { Task, TaskTable } from "../database/models/task.model";
 import { TestTaskTable } from "../database/models/test-task.model";
 import { CategoryTable } from "../database/models/category.model";
 
@@ -67,7 +67,13 @@ class TestController extends Controller {
     _reply: FastifyReply,
   ) {
     const user = request.currentUser!;
-    const { name, questionCount, categoryId, taskIds = [], allowBack = true } = request.body;
+    const {
+      name,
+      questionCount,
+      categoryId,
+      taskIds = [],
+      allowBack = true,
+    } = request.body;
 
     const category = await db.query.CategoryTable.findFirst({
       where: and(
@@ -99,15 +105,13 @@ class TestController extends Controller {
       if (!test) throw new Error("Test creation failed!");
 
       if (taskIds.length > 0) {
-        const validTasks = await tx
-          .select({ id: TaskTable.id })
-          .from(TaskTable)
-          .where(
-            and(
-              eq(TaskTable.categoryId, categoryId),
-              inArray(TaskTable.id, taskIds),
-            ),
-          );
+        const validTasks = await tx.query.TaskTable.findMany({
+          where: and(
+            eq(TaskTable.categoryId, categoryId),
+            inArray(TaskTable.id, taskIds),
+          ),
+          columns: { id: true },
+        });
 
         if (validTasks.length > 0) {
           await tx
@@ -245,7 +249,7 @@ class TestController extends Controller {
         ? Math.max(0, test.questionCount - pinnedTasks.length)
         : undefined;
 
-    let randomTasks: typeof pinnedTasks = [];
+    let randomTasks: Task[] = [];
     if (remaining === undefined || remaining > 0) {
       const whereClause =
         pinnedIds.length > 0
