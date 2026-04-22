@@ -1,13 +1,15 @@
 export type Task = {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    categoryId: string;
-    description: string;
-    createdBy: string;
-    type: TaskType;
-    options: TaskOptions;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: string;
+  description: string;
+  createdBy: string;
+  type: TaskType;
+  options: TaskOptions;
 };
+
+export type ImportTask = Pick<Task, "description" | "type" | "options">;
 
 export enum TaskType {
   SINGLE_PICK = "SINGLE_PICK",
@@ -39,4 +41,9 @@ export type EssayOptions = {
   content: string;
 };
 
-export type TaskOptions = PickOptions | SortOptions | MatchOptions | EssayOptions | null;
+export type TaskOptions =
+  | PickOptions
+  | SortOptions
+  | MatchOptions
+  | EssayOptions
+  | null;
