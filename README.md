@@ -3,4 +3,4 @@
 Gilián Erik szakdolgozata - Tanulást segítő webalkalmazás
 
 Fájlok:
-https://1drv.ms/f/c/0363a8c078447d4d/IgBK_EwSlW0cTqiJrpFn3lu0AYCZKRec2jv8fyRTdWV661w?e=2eaNHo
+https://drive.google.com/drive/folders/1mlSSuwOFQgvB8nH4rAFwFsJdOa0J2_K5?usp=sharing
