@@ -156,7 +156,7 @@ class TestController extends Controller {
 
       if (!updatedTest) throw new Error("Test update failed!");
 
-      if (taskIds !== undefined) {
+      if (taskIds) {
         await tx.delete(TestTaskTable).where(eq(TestTaskTable.testId, id));
 
         if (taskIds.length > 0) {

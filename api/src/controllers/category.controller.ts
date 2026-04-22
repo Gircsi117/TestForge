@@ -15,7 +15,7 @@ type CreateCategoryBody = Pick<CreateCategoryArgs, "name" | "description">;
 class CategoryController extends Controller {
   @Route("GET", "/")
   @Route.Auth()
-  async get(request: FastifyRequest, reply: FastifyReply) {
+  async get(request: FastifyRequest) {
     const user = request.currentUser!;
 
     const categories = await db.query.CategoryTable.findMany({
@@ -30,10 +30,7 @@ class CategoryController extends Controller {
 
   @Route("GET", "/:id")
   @Route.Auth()
-  async getOne(
-    request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
-  ) {
+  async getOne(request: FastifyRequest<{ Params: { id: string } }>) {
     const user = request.currentUser!;
     const { id } = request.params;
 
@@ -54,10 +51,7 @@ class CategoryController extends Controller {
 
   @Route("POST", "/")
   @Route.Auth()
-  async create(
-    request: FastifyRequest<{ Body: CreateCategoryBody }>,
-    reply: FastifyReply,
-  ) {
+  async create(request: FastifyRequest<{ Body: CreateCategoryBody }>) {
     const { name, description } = request.body;
     const user = request.currentUser!;
 
@@ -118,16 +112,14 @@ class CategoryController extends Controller {
   ) {
     const { id } = request.params;
 
-    const deletedCount = await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       const deleted = await tx
         .delete(CategoryTable)
         .where(eq(CategoryTable.id, id))
         .returning();
 
-      return deleted.length;
+      if (deleted.length === 0) throw new NotFoundError("Category not found!");
     });
-
-    if (deletedCount === 0) throw new NotFoundError("Category not found!");
 
     return {
       success: true,

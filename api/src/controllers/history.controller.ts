@@ -18,10 +18,23 @@ class HistoryController extends Controller {
     const user = request.currentUser!;
     const { testId, testName, score, maxScore, timeTaken } = request.body;
 
-    const [entry] = await db
-      .insert(HistoryTable)
-      .values({ userId: user.id, testId, testName, score, maxScore, timeTaken })
-      .returning();
+    const entry = await db.transaction(async (tx) => {
+      const [entry] = await tx
+        .insert(HistoryTable)
+        .values({
+          userId: user.id,
+          testId,
+          testName,
+          score,
+          maxScore,
+          timeTaken,
+        })
+        .returning();
+
+      if (!entry) throw new Error("Failed to create history entry!");
+
+      return entry;
+    });
 
     return { success: true, history: entry };
   }

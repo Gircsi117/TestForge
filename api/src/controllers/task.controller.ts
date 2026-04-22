@@ -113,10 +113,10 @@ class TaskController extends Controller {
         })
         .returning();
 
+      if (!task) throw new Error("Task creation failed!");
+
       return task || null;
     });
-
-    if (!task) throw new Error("Task creation failed!");
 
     return {
       success: true,
@@ -148,10 +148,10 @@ class TaskController extends Controller {
         .where(and(eq(TaskTable.id, id), eq(TaskTable.createdBy, user.id)))
         .returning();
 
-      return task || null;
-    });
+      if (!task) throw new NotFoundError("Task not found!");
 
-    if (!task) throw new Error("Task update failed!");
+      return task;
+    });
 
     return {
       success: true,
@@ -168,9 +168,14 @@ class TaskController extends Controller {
     const user = request.currentUser!;
     const { id } = request.params;
 
-    await db
-      .delete(TaskTable)
-      .where(and(eq(TaskTable.id, id), eq(TaskTable.createdBy, user.id)));
+    await db.transaction(async (tx) => {
+      const deleted = await tx
+        .delete(TaskTable)
+        .where(and(eq(TaskTable.id, id), eq(TaskTable.createdBy, user.id)))
+        .returning();
+
+      if (deleted.length === 0) throw new NotFoundError("Task not found!");
+    });
 
     return {
       success: true,

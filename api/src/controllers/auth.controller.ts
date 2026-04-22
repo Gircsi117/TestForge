@@ -80,7 +80,7 @@ class AuthController extends Controller {
 
     const hashedPassword = await Server.app.bcrypt.hash(password);
 
-    const user = await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       const [user] = await tx
         .insert(UserTable)
         .values({
@@ -91,8 +91,6 @@ class AuthController extends Controller {
         .returning();
 
       if (!user) throw new Error("User creation failed!");
-
-      return user;
     });
 
     reply.status(200);
@@ -132,12 +130,12 @@ class AuthController extends Controller {
 
     const updates: Partial<{ name: string; password: string }> = {};
 
-    if (name !== undefined) {
+    if (name) {
       if (!name.trim()) throw new MissingArgumentError("A név nem lehet üres!");
       updates.name = name.trim();
     }
 
-    if (newPassword !== undefined) {
+    if (newPassword) {
       if (!currentPassword)
         throw new MissingArgumentError("Add meg a jelenlegi jelszót!");
 
@@ -163,11 +161,17 @@ class AuthController extends Controller {
       throw new MissingArgumentError("Nincs módosítandó adat!");
     }
 
-    const [updatedUser] = await db
-      .update(UserTable)
-      .set(updates)
-      .where(eq(UserTable.id, currentUser.id))
-      .returning();
+    const updatedUser = await db.transaction(async (tx) => {
+      const [updatedUser] = await tx
+        .update(UserTable)
+        .set(updates)
+        .where(eq(UserTable.id, currentUser.id))
+        .returning();
+
+      if (!updatedUser) throw new Error("Failed to update user!");
+
+      return updatedUser;
+    });
 
     reply.status(200);
     return { success: true, user: { ...updatedUser, password: undefined } };
