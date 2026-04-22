@@ -119,16 +119,9 @@ header {
 
   .header-avatar {
     width: 34px;
-    height: 34px;
-    border-radius: 8px;
     background: linear-gradient(135deg, #265f18, #34d399);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 15px;
-    font-weight: 700;
     color: #fff;
-    flex-shrink: 0;
     box-shadow: 0 2px 6px rgba(52, 211, 153, 0.2);
   }
 }
@@ -151,13 +144,7 @@ nav {
 
     .nav-brand-icon {
       width: 32px;
-      height: 32px;
-      border-radius: 8px;
       background: linear-gradient(135deg, #265f18, #34d399);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
       box-shadow: 0 2px 6px rgba(52, 211, 153, 0.25);
 
       svg {
@@ -205,7 +192,9 @@ nav {
     padding: 9px var(--input-padding);
     border-radius: var(--border-radius);
     border-left: 2px solid transparent;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
 
     .nav-item-icon {
       display: flex;
@@ -229,15 +218,21 @@ nav {
       background-color: rgba(255, 255, 255, 0.05);
       cursor: pointer;
 
-      .nav-item-icon svg { color: var(--font-color); }
-      .nav-item-label { color: var(--font-color); }
+      .nav-item-icon svg {
+        color: var(--font-color);
+      }
+      .nav-item-label {
+        color: var(--font-color);
+      }
     }
 
     &.active {
       background-color: rgba(38, 95, 24, 0.22);
       border-left-color: #34d399;
 
-      .nav-item-icon svg { color: #34d399; }
+      .nav-item-icon svg {
+        color: #34d399;
+      }
       .nav-item-label {
         color: var(--font-color);
         font-weight: 500;
@@ -259,6 +254,21 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+.monogram {
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #34d399;
+  background: rgba(38, 95, 24, 0.35);
+  border: 1px solid rgba(38, 95, 24, 0.6);
 }
 
 //*------------------------------------------------------------------------------------------------------------------
@@ -324,8 +334,14 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #2d7020 0%, var(--button-background) 100%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    #2d7020 0%,
+    var(--button-background) 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.06);
   width: 100%;
   max-width: 100%;
@@ -336,7 +352,11 @@ textarea {
   overflow-x: hidden;
   font-weight: 500;
   letter-spacing: 0.2px;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s ease;
 
   * {
     font-size: 16px !important;
@@ -344,8 +364,14 @@ textarea {
 
   &:hover {
     cursor: pointer;
-    background: linear-gradient(180deg, #37882a 0%, var(--button-background-hover) 100%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(
+      180deg,
+      #37882a 0%,
+      var(--button-background-hover) 100%
+    );
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   &:active:not(:disabled) {
@@ -386,8 +412,12 @@ textarea {
     box-shadow: none;
     border-color: var(--button-background-hover);
 
-    .btn-icon * { color: #34d399; }
-    .btn-text { color: #34d399; }
+    .btn-icon * {
+      color: #34d399;
+    }
+    .btn-text {
+      color: #34d399;
+    }
   }
 }
 
@@ -484,9 +514,18 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 60% 40%, rgba(38, 95, 24, 0.12) 0%, transparent 60%),
-              radial-gradient(ellipse at 20% 80%, rgba(52, 211, 153, 0.06) 0%, transparent 50%),
-              var(--background-color);
+  background:
+    radial-gradient(
+      ellipse at 60% 40%,
+      rgba(38, 95, 24, 0.12) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 20% 80%,
+      rgba(52, 211, 153, 0.06) 0%,
+      transparent 50%
+    ),
+    var(--background-color);
   padding: var(--content-padding);
 }
 
@@ -497,7 +536,9 @@ textarea {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 36px 32px 28px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
 
 .auth-brand {
@@ -586,7 +627,9 @@ textarea {
     border-radius: var(--border-radius);
     color: var(--font-color);
     font-size: 15px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
     margin: 0;
 
     &:focus {
@@ -604,7 +647,11 @@ textarea {
 .auth-btn {
   width: 100%;
   height: var(--input-height);
-  background: linear-gradient(180deg, #2d7020 0%, var(--button-background) 100%);
+  background: linear-gradient(
+    180deg,
+    #2d7020 0%,
+    var(--button-background) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--border-radius);
   color: var(--font-color);
@@ -612,13 +659,24 @@ textarea {
   font-weight: 600;
   letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
   margin-bottom: 20px;
 
   &:hover {
-    background: linear-gradient(180deg, #37882a 0%, var(--button-background-hover) 100%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(
+      180deg,
+      #37882a 0%,
+      var(--button-background-hover) 100%
+    );
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   &:active {
@@ -712,7 +770,9 @@ textarea {
   &:hover {
     background: rgba(255, 255, 255, 0.06);
 
-    svg { color: var(--font-color); }
+    svg {
+      color: var(--font-color);
+    }
   }
 }
 
@@ -734,9 +794,12 @@ textarea {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 
-  &:hover, &.dragging {
+  &:hover,
+  &.dragging {
     border-color: #34d399;
     background: rgba(52, 211, 153, 0.04);
   }
@@ -816,7 +879,9 @@ textarea {
   font-size: 13px;
   color: #94a3b8;
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 
   &:hover {
     border-color: #94a3b8;
@@ -887,7 +952,9 @@ textarea {
   &.correct {
     background: rgba(5, 150, 105, 0.12);
 
-    span:last-child { color: #34d399; }
+    span:last-child {
+      color: #34d399;
+    }
   }
 }
 
@@ -933,11 +1000,19 @@ textarea {
   background: rgba(255, 255, 255, 0.04);
   font-size: 14px;
 
-  span:first-child { flex: 1; }
+  span:first-child {
+    flex: 1;
+  }
 
-  .arrow { color: #475569; font-size: 12px; }
+  .arrow {
+    color: #475569;
+    font-size: 12px;
+  }
 
-  .group-name { color: #34d399; font-size: 12px; }
+  .group-name {
+    color: #34d399;
+    font-size: 12px;
+  }
 }
 
 .import-preview-essay {

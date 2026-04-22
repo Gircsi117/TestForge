@@ -48,24 +48,7 @@ const CategoriesPage = () => {
                   marginBottom: "12px",
                 }}
               >
-                <div
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "10px",
-                    backgroundColor: "rgba(38,95,24,0.35)",
-                    border: "1px solid rgba(38,95,24,0.6)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: "#34d399",
-                    flexShrink: 0,
-                  }}
-                >
-                  {getMonogram(category.name)}
-                </div>
+                <div className="monogram">{getMonogram(category.name)}</div>
                 <h2 style={{ fontSize: "18px", fontWeight: 700 }}>
                   {category.name}
                 </h2>

@@ -42,7 +42,7 @@ const Header = () => {
             <span className="header-user-name">{user.name}</span>
             <span className="header-user-email">{user.email}</span>
           </div>
-          <div className="header-avatar">{getMonogram(user.name)}</div>
+          <div className="monogram header-avatar">{getMonogram(user.name)}</div>
         </div>
       )}
     </header>

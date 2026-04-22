@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav>
       <div className="nav-brand">
-        <div className="nav-brand-icon">
+        <div className="monogram nav-brand-icon">
           <FaShieldHalved />
         </div>
         <span className="nav-brand-text">TestForge</span>
@@ -25,7 +25,11 @@ const Navbar = () => {
       <div className="nav-section-label">Navigáció</div>
       <div className="nav-items">
         <NavItem title="Főoldal" link="/" icon={<FaHome />} />
-        <NavItem title="Kategóriák" link="/categories" icon={<BiSolidCategory />} />
+        <NavItem
+          title="Kategóriák"
+          link="/categories"
+          icon={<BiSolidCategory />}
+        />
         <NavItem title="Tesztek" link="/tests" icon={<FaBook />} />
       </div>
 
