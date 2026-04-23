@@ -1,6 +1,7 @@
 import React from "react";
 import type { SortOptions, TaskOptions, TaskType } from "../../../types/task.type";
 import Button from "../../../components/button/Button";
+import InfoBox from "../../../components/info/InfoBox";
 import { FaArrowDown, FaArrowUp, FaPlus, FaTrash } from "react-icons/fa";
 
 type Props = {
@@ -59,6 +60,9 @@ const SortTask: React.FC<Props> = ({ options, setOptions }) => {
 
   return (
     <div>
+      <InfoBox>
+        Add meg az elemeket a helyes sorrendben. A nyilakkal módosíthatod a sorrendet – a tanuló véletlenszerű sorrendben fogja látni őket, és a helyes sorrendbe kell rendeznie.
+      </InfoBox>
       <Button icon={<FaPlus />} onClick={addItem}>
         Új elem
       </Button>

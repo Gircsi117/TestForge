@@ -706,6 +706,30 @@ textarea {
 //* Import Tasks Modal
 //*------------------------------------------------------------------------------------------------------------------
 
+//*------------------------------------------------------------------------------------------------------------------
+//* InfoBox
+//*------------------------------------------------------------------------------------------------------------------
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.18);
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.5;
+
+  .info-box-icon {
+    font-size: 15px !important;
+    color: #34d399;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
 .import-modal-overlay {
   position: fixed;
   inset: 0;

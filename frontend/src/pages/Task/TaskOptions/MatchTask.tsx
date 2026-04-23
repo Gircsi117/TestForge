@@ -1,6 +1,7 @@
 import React from "react";
 import type { MatchOptions, TaskOptions, TaskType } from "../../../types/task.type";
 import Button from "../../../components/button/Button";
+import InfoBox from "../../../components/info/InfoBox";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 type Props = {
@@ -76,6 +77,9 @@ const MatchTask: React.FC<Props> = ({ options, setOptions }) => {
 
   return (
     <div>
+      <InfoBox>
+        Először hozd létre a csoportokat (kategóriákat), majd add meg az elemeket és rendeld mindegyiket a megfelelő csoporthoz a legördülő menüből. A tanuló feladata az elemeket a helyes csoportba sorolni.
+      </InfoBox>
       <div style={{ marginBottom: "20px" }}>
         <Button icon={<FaPlus />} onClick={addGroup}>
           Új csoport

@@ -5,6 +5,7 @@ import {
   type TaskOptions,
 } from "../../../types/task.type";
 import Button from "../../../components/button/Button";
+import InfoBox from "../../../components/info/InfoBox";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 type Props = {
@@ -30,6 +31,11 @@ const PickTask: React.FC<Props> = ({ type, options, setOptions }) => {
 
   return (
     <div>
+      <InfoBox>
+        {type === TaskType.SINGLE_PICK
+          ? "Adj meg legalább két lehetséges választ, majd a bal oldali kerek gombbal jelöld meg az egyetlen helyes választ."
+          : "Adj meg legalább két lehetséges választ, majd a bal oldali négyzetgombokkal jelöld meg az összes helyes választ (több is lehet)."}
+      </InfoBox>
       <Button icon={<FaPlus />} onClick={addOption}>
         Új opció
       </Button>
