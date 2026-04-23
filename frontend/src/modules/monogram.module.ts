@@ -1,2 +1,2 @@
 export const getMonogram = (name: string) =>
-  name.trim().charAt(0).toUpperCase();
+  (name || "").trim().charAt(0).toUpperCase();

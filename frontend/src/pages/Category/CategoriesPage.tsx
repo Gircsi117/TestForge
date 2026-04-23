@@ -67,19 +67,37 @@ const CategoriesPage = () => {
                     {category.name}
                   </h2>
                   {!category.isOwner && (
-                    <p style={{ fontSize: "12px", color: "#94a3b8", marginTop: "2px" }}>
-                      Létrehozta: {category.creator.name}
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#94a3b8",
+                        marginTop: "2px",
+                      }}
+                    >
+                      Létrehozta: {category?.creator?.name || ""}
                     </p>
                   )}
                 </div>
                 {!category.isOwner && (
                   <Label background="rgba(167,139,250,0.12)" color="#a78bfa">
-                    {category.canEdit ? "Szerkesztő" : <><FaLock style={{ fontSize: "10px" }} /> Csak olvasó</>}
+                    {category.canEdit ? (
+                      "Szerkesztő"
+                    ) : (
+                      <>
+                        <FaLock style={{ fontSize: "10px" }} /> Csak olvasó
+                      </>
+                    )}
                   </Label>
                 )}
               </div>
               {category.description && (
-                <p style={{ fontSize: "14px", color: "#94a3b8", lineHeight: "1.5" }}>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "#94a3b8",
+                    lineHeight: "1.5",
+                  }}
+                >
                   {category.description}
                 </p>
               )}
