@@ -16,6 +16,9 @@ interface PracticeState {
   isDone: boolean;
   setIsDone: (isDone: boolean) => void;
 
+  essayGrades: Map<string, boolean>;
+  setEssayGrade: (taskId: string, correct: boolean) => void;
+
   reset: () => void;
 }
 
@@ -38,11 +41,20 @@ export const usePracticeStore = create<PracticeState>((set) => ({
   isDone: false,
   setIsDone: (isDone: boolean) => set({ isDone }),
 
+  essayGrades: new Map(),
+  setEssayGrade: (taskId: string, correct: boolean) =>
+    set((state) => {
+      const newGrades = new Map(state.essayGrades);
+      newGrades.set(taskId, correct);
+      return { essayGrades: newGrades };
+    }),
+
   reset: () =>
     set({
       tasks: [],
       currentTask: null,
       answers: new Map(),
       isDone: false,
+      essayGrades: new Map(),
     }),
 }));

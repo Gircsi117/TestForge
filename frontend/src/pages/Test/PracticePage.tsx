@@ -22,7 +22,11 @@ import { FaSave } from "react-icons/fa";
 import { MdTimer } from "react-icons/md";
 import { formatTime } from "../../modules/time.module";
 
-const isTaskCorrect = (task: Task, answer: TaskOptions | string): boolean => {
+const isTaskCorrect = (
+  task: Task,
+  answer: TaskOptions | string,
+  essayGrades: Map<string, boolean>,
+): boolean => {
   switch (task.type) {
     case TaskType.SINGLE_PICK:
     case TaskType.MULTI_PICK: {
@@ -48,7 +52,7 @@ const isTaskCorrect = (task: Task, answer: TaskOptions | string): boolean => {
       });
     }
     case TaskType.ESSAY:
-      return false;
+      return essayGrades.get(task.id) ?? false;
     default:
       return false;
   }
@@ -57,11 +61,12 @@ const isTaskCorrect = (task: Task, answer: TaskOptions | string): boolean => {
 const calculateScore = (
   tasks: Task[],
   answers: Map<string, TaskOptions | string>,
+  essayGrades: Map<string, boolean>,
 ): number =>
   tasks.reduce((score, task) => {
     const answer = answers.get(task.id);
     if (answer === undefined) return score;
-    return isTaskCorrect(task, answer) ? score + 1 : score;
+    return isTaskCorrect(task, answer, essayGrades) ? score + 1 : score;
   }, 0);
 
 const PracticePage = () => {
@@ -75,6 +80,7 @@ const PracticePage = () => {
     answers,
     isDone,
     setIsDone,
+    essayGrades,
     reset,
   } = usePracticeStore();
 
@@ -134,13 +140,20 @@ const PracticePage = () => {
   }, [timeLeft]);
 
   const score = useMemo(
-    () => (isDone ? calculateScore(tasks, answers) : null),
-    [isDone, tasks, answers],
+    () => (isDone ? calculateScore(tasks, answers, essayGrades) : null),
+    [isDone, tasks, answers, essayGrades],
   );
 
-  const gradableCount = useMemo(
-    () => tasks.filter((t) => t.type !== TaskType.ESSAY).length,
-    [tasks],
+  const gradableCount = useMemo(() => tasks.length, [tasks]);
+
+  const ungradedEssayCount = useMemo(
+    () =>
+      isDone
+        ? tasks.filter(
+            (t) => t.type === TaskType.ESSAY && !essayGrades.has(t.id),
+          ).length
+        : 0,
+    [isDone, tasks, essayGrades],
   );
 
   const saveHistory = async () => {
@@ -204,9 +217,9 @@ const PracticePage = () => {
             {score}/{gradableCount}
           </span>
           <span style={{ color: "gray" }}>pont</span>
-          {tasks.some((t) => t.type === TaskType.ESSAY) && (
-            <span style={{ color: "gray", fontSize: "14px" }}>
-              (az esszé feladatok nem kerülnek automatikusan értékelésre)
+          {ungradedEssayCount > 0 && (
+            <span style={{ color: "#fb923c", fontSize: "14px" }}>
+              ({ungradedEssayCount} esszé még nincs értékelve)
             </span>
           )}
         </div>
