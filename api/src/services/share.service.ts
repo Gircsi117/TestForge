@@ -46,7 +46,7 @@ class ShareService {
       .where(where);
   }
 
-  static async mapCategory(
+  static mapCategory(
     row: Awaited<ReturnType<typeof this.categoryQuery>>[number],
     userId: string,
   ) {
@@ -105,7 +105,7 @@ class ShareService {
       .where(where);
   }
 
-  static async mapTest(
+  static mapTest(
     row: Awaited<ReturnType<typeof this.testQuery>>[number],
     userId: string,
   ) {
