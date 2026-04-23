@@ -17,6 +17,7 @@ export const CategoryTable = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar({ length: 255 }).notNull(),
   description: varchar({ length: 1024 }),
+  shareCode: varchar("share_code", { length: 36 }).unique(),
 
   ...withCreatedBy(),
   ...withTimestamps(),

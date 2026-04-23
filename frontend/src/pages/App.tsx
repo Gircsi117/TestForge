@@ -16,6 +16,7 @@ import TestControllerPage from "./Test/TestControllerPage";
 import PracticePage from "./Test/PracticePage";
 import TaskControllerPage from "./Task/TaskControllerPage";
 import ProfilePage from "./Profile/ProfilePage";
+import SharePage from "./Share/SharePage";
 
 function App() {
   const { isAuth, login, logout } = useAuthStore();
@@ -146,6 +147,24 @@ function App() {
               element={
                 <Protection auth error>
                   <PracticePage />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="tests/:id/share"
+              element={
+                <Protection auth error>
+                  <SharePage type="test" />
+                </Protection>
+              }
+            />
+
+            <Route
+              path="categories/:id/share"
+              element={
+                <Protection auth error>
+                  <SharePage type="category" />
                 </Protection>
               }
             />

@@ -2,29 +2,31 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import Route from "../decorators/route.decorator";
 import { Controller } from "../modules/controller.module";
 import db from "../database/db";
-import { and, eq, inArray, notInArray, sql } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, notInArray, or, sql } from "drizzle-orm";
 import {
   CreateTestArgs,
   TestTable,
   UpdateTestArgs,
 } from "../database/models/test.model";
-import { NotFoundError } from "../modules/error.module";
+import { ForbiddenError, NotFoundError } from "../modules/error.module";
 import { Task, TaskTable } from "../database/models/task.model";
 import { TestTaskTable } from "../database/models/test-task.model";
 import { CategoryTable } from "../database/models/category.model";
+import { UserTable } from "../database/models/user.model";
+import { TestAccessTable } from "../database/models/test-access.model";
+import { CategoryAccessTable } from "../database/models/category-access.model";
+import ShareService from "../services/share.service";
 
 class TestController extends Controller {
   @Route("GET", "/")
   @Route.Auth()
   async all(request: FastifyRequest, _reply: FastifyReply) {
     const user = request.currentUser!;
-
-    const tests = await db.query.TestTable.findMany({
-      where: eq(TestTable.createdBy, user.id),
-      with: { category: true },
-    });
-
-    return { success: true, tests: tests || [] };
+    const rows = await ShareService.testQuery(user.id);
+    return {
+      success: true,
+      tests: rows.map((r) => ShareService.mapTest(r, user.id)),
+    };
   }
 
   @Route("GET", "/:id")
@@ -36,25 +38,20 @@ class TestController extends Controller {
     const user = request.currentUser!;
     const { id } = request.params;
 
-    const test = await db.query.TestTable.findFirst({
-      where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
-      with: {
-        category: true,
-        testTasks: { with: { task: true } },
-      },
-    });
+    const [item] = await ShareService.testQuery(user.id, id);
 
-    if (!test) {
-      throw new NotFoundError("Test not found!");
-    }
+    if (!item) throw new NotFoundError("Test not found!");
+
+    const base = ShareService.mapTest(item, user.id);
+
+    const testTasks = await db.query.TestTaskTable.findMany({
+      where: eq(TestTaskTable.testId, id),
+      with: { task: true },
+    });
 
     return {
       success: true,
-      test: {
-        ...test,
-        tasks: test.testTasks.map((tt) => tt.task),
-        testTasks: undefined,
-      },
+      test: { ...base, tasks: testTasks.map((tt) => tt.task) },
     };
   }
 
@@ -75,20 +72,11 @@ class TestController extends Controller {
       allowBack = true,
     } = request.body;
 
-    const category = await db.query.CategoryTable.findFirst({
-      where: and(
-        eq(CategoryTable.createdBy, user.id),
-        eq(CategoryTable.id, categoryId),
-      ),
-    });
+    const hasAccess = await ShareService.canAccessCategory(user.id, categoryId);
+    if (!hasAccess) throw new NotFoundError("Category not found or no access!");
 
-    if (!category) {
-      throw new NotFoundError("Category not found or you don't own it!");
-    }
-
-    if (questionCount && questionCount < 0) {
+    if (questionCount && questionCount < 0)
       throw new Error("Question count cannot be negative!");
-    }
 
     const test = await db.transaction(async (tx) => {
       const [test] = await tx
@@ -139,17 +127,41 @@ class TestController extends Controller {
     const { id } = request.params;
     const { taskIds, ...data } = request.body;
 
-    const test = await db.query.TestTable.findFirst({
-      where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
-    });
+    // Check access
+    const [access] = await db
+      .select({
+        createdBy: TestTable.createdBy,
+        categoryId: TestTable.categoryId,
+        accessCanEdit: TestAccessTable.canEdit,
+      })
+      .from(TestTable)
+      .leftJoin(
+        TestAccessTable,
+        and(
+          eq(TestAccessTable.testId, TestTable.id),
+          eq(TestAccessTable.userId, user.id),
+        ),
+      )
+      .where(
+        and(
+          eq(TestTable.id, id),
+          or(
+            eq(TestTable.createdBy, user.id),
+            isNotNull(TestAccessTable.userId),
+          ),
+        ),
+      )
+      .limit(1);
 
-    if (!test) {
-      throw new NotFoundError("Test not found or you don't own it!");
-    }
+    if (!access) throw new NotFoundError("Test not found!");
 
-    if (data.questionCount && data.questionCount < 0) {
+    const canEdit =
+      access.createdBy === user.id || (access.accessCanEdit ?? false);
+    if (!canEdit)
+      throw new ForbiddenError("Nincs szerkesztési jogod ehhez a teszthez!");
+
+    if (data.questionCount && data.questionCount < 0)
       throw new Error("Question count cannot be negative!");
-    }
 
     const updatedTest = await db.transaction(async (tx) => {
       const [updatedTest] = await tx
@@ -169,7 +181,7 @@ class TestController extends Controller {
             .from(TaskTable)
             .where(
               and(
-                eq(TaskTable.categoryId, test.categoryId),
+                eq(TaskTable.categoryId, access.categoryId),
                 inArray(TaskTable.id, taskIds),
               ),
             );
@@ -201,13 +213,11 @@ class TestController extends Controller {
     const user = request.currentUser!;
     const { id } = request.params;
 
+    // Only owner can delete
     const test = await db.query.TestTable.findFirst({
       where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
     });
-
-    if (!test) {
-      throw new NotFoundError("Test not found!");
-    }
+    if (!test) throw new NotFoundError("Test not found!");
 
     await db.transaction(async (tx) => {
       await tx.delete(TestTable).where(eq(TestTable.id, id));
@@ -228,13 +238,33 @@ class TestController extends Controller {
     const user = request.currentUser!;
     const { id } = request.params;
 
-    const test = await db.query.TestTable.findFirst({
-      where: and(eq(TestTable.createdBy, user.id), eq(TestTable.id, id)),
-    });
+    // Allow any access (own or shared)
+    const [test] = await db
+      .select({
+        id: TestTable.id,
+        questionCount: TestTable.questionCount,
+        categoryId: TestTable.categoryId,
+      })
+      .from(TestTable)
+      .leftJoin(
+        TestAccessTable,
+        and(
+          eq(TestAccessTable.testId, TestTable.id),
+          eq(TestAccessTable.userId, user.id),
+        ),
+      )
+      .where(
+        and(
+          eq(TestTable.id, id),
+          or(
+            eq(TestTable.createdBy, user.id),
+            isNotNull(TestAccessTable.userId),
+          ),
+        ),
+      )
+      .limit(1);
 
-    if (!test) {
-      throw new NotFoundError("Test not found!");
-    }
+    if (!test) throw new NotFoundError("Test not found!");
 
     const pinnedRows = await db.query.TestTaskTable.findMany({
       where: eq(TestTaskTable.testId, id),

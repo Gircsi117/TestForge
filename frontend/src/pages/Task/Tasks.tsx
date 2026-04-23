@@ -11,9 +11,10 @@ import ImportTasksModal from "./ImportTasksModal";
 
 type Props = {
   categoryId: string;
+  canEdit?: boolean;
 };
 
-const Tasks: React.FC<Props> = ({ categoryId }) => {
+const Tasks: React.FC<Props> = ({ categoryId, canEdit = true }) => {
   const navigate = useNavigate();
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [showImport, setShowImport] = React.useState(false);
@@ -82,24 +83,17 @@ const Tasks: React.FC<Props> = ({ categoryId }) => {
     <div>
       <h2 style={{ marginBottom: "10px", marginTop: "50px" }}>Feladatok</h2>
       <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
-        <Button
-          icon={<FaPlus />}
-          onClick={() => navigate(`/tasks/${categoryId}`)}
-        >
-          Új feladat
-        </Button>
-        <Button
-          icon={<FaFileImport />}
-          btnType="secondary"
-          onClick={() => setShowImport(true)}
-        >
-          Importálás JSON-ból
-        </Button>
-        <Button
-          icon={<FaFileExport />}
-          btnType="secondary"
-          onClick={handleExport}
-        >
+        {canEdit && (
+          <>
+            <Button icon={<FaPlus />} onClick={() => navigate(`/tasks/${categoryId}`)}>
+              Új feladat
+            </Button>
+            <Button icon={<FaFileImport />} btnType="secondary" onClick={() => setShowImport(true)}>
+              Importálás JSON-ból
+            </Button>
+          </>
+        )}
+        <Button icon={<FaFileExport />} btnType="secondary" onClick={handleExport}>
           Exportálás JSON-ba
         </Button>
       </div>

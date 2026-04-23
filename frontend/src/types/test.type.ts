@@ -7,8 +7,12 @@ export type Test = {
   questionCount: number;
   time: number;
   allowBack: boolean;
+  shareCode: string | null;
   categoryId: string;
   createdBy: string;
+  creator: { id: string; name: string };
+  isOwner: boolean;
+  canEdit: boolean;
   createdAt: string;
   updatedAt: string;
 

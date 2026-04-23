@@ -22,6 +22,7 @@ export const TestTable = pgTable(
     questionCount: integer("question_count").notNull().default(0),
     time: integer("time").notNull().default(0),
     allowBack: boolean("allow_back").notNull().default(true),
+    shareCode: varchar("share_code", { length: 36 }).unique(),
     categoryId: uuid("category_id")
       .notNull()
       .references(() => CategoryTable.id, { onDelete: "cascade" }),

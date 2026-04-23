@@ -1,11 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import {
-  getStatusCode,
-  NotFoundError,
-  UnauthorizedError,
-} from "../modules/error.module";
+import { getStatusCode, UnauthorizedError } from "../modules/error.module";
 import db from "../database/db";
-import { Controller } from "../modules/controller.module";
 import Server from "../modules/server.module";
 import { UserTable } from "../database/models/user.model";
 import { eq } from "drizzle-orm";
@@ -22,14 +17,14 @@ function RouteFunction(method: HttpMehodeType, path: string) {
   return function (
     target: any,
     propertyName: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
     // Az eredeti metódus típusát módosítjuk
     descriptor.value = async function (
       request: FastifyRequest,
-      reply: FastifyReply
+      reply: FastifyReply,
     ) {
       try {
         return await originalMethod.call(this, request, reply);
@@ -60,13 +55,13 @@ RouteFunction.Auth = function () {
   return function (
     target: object,
     propertyName: string | symbol,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (
       request: FastifyRequest,
-      reply: FastifyReply
+      reply: FastifyReply,
     ) {
       const accessToken = request.cookies.access_token;
 

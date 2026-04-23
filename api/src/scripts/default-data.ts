@@ -12,6 +12,8 @@ import {
 import { CategoryTable } from "../database/models/category.model";
 import { UserTable } from "../database/models/user.model";
 import { HistoryTable } from "../database/models/history.model";
+import { CategoryAccessTable } from "../database/models/category-access.model";
+import { TestAccessTable } from "../database/models/test-access.model";
 
 async function main() {
   try {
@@ -19,6 +21,8 @@ async function main() {
 
     await db.execute(sql`SET session_replication_role = 'replica'`);
 
+    await db.delete(CategoryAccessTable).execute();
+    await db.delete(TestAccessTable).execute();
     await db.delete(HistoryTable).execute();
     await db.delete(TestTable).execute();
     await db.delete(TaskTable).execute();
@@ -27,14 +31,22 @@ async function main() {
 
     await db.execute(sql`SET session_replication_role = 'origin'`);
 
-    const [user] = await db
+    const [user, user2] = await db
       .insert(UserTable)
-      .values({
-        id: "1a4a0616-5b9f-43dc-9344-5874c8082ab2",
-        name: "Test User",
-        email: "test@tf.com",
-        password: await Server.app.bcrypt.hash("test1234"),
-      })
+      .values([
+        {
+          id: "1a4a0616-5b9f-43dc-9344-5874c8082ab2",
+          name: "Test User",
+          email: "test@tf.com",
+          password: await Server.app.bcrypt.hash("test1234"),
+        },
+        {
+          id: "e9c9ef6e-59db-42fe-9bdc-ee189e0f0c5f",
+          name: "Test User",
+          email: "test2@tf.com",
+          password: await Server.app.bcrypt.hash("test12345"),
+        },
+      ])
       .returning();
 
     const [cat1, cat2] = await db
@@ -51,6 +63,17 @@ async function main() {
           name: "History",
           description: "Ez egy alap történelem kategória!",
           createdBy: user!.id,
+        },
+      ])
+      .returning();
+
+    const a = await db
+      .insert(CategoryAccessTable)
+      .values([
+        {
+          categoryId: cat1!.id,
+          userId: user2!.id,
+          canEdit: true,
         },
       ])
       .returning();

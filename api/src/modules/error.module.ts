@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 export enum ErrorName {
   Unauthorized = "Unauthorized",
+  Forbidden = "Forbidden",
   NotFound = "NotFound",
   MissingArgument = "MissingArgument",
   AlreadyExists = "AlreadyExists",
@@ -11,6 +12,7 @@ export enum ErrorName {
 
 export enum HTTPStatus {
   Unauthorized = 401,
+  Forbidden = 403,
   NotFound = 404,
   MissingArgument = 400,
   AlreadyExists = 409,
@@ -21,6 +23,8 @@ export const getStatusCode = (error: Error) => {
   switch (error.name as ErrorName) {
     case ErrorName.Unauthorized:
       return HTTPStatus.Unauthorized;
+    case ErrorName.Forbidden:
+      return HTTPStatus.Forbidden;
     case ErrorName.NotFound:
       return HTTPStatus.NotFound;
     case ErrorName.MissingArgument:
@@ -69,5 +73,15 @@ export class AlreadyExistsError extends Error {
     super(message ?? "Resource already exists!");
     this.name = ErrorName.AlreadyExists;
     this.statusCode = HTTPStatus.AlreadyExists;
+  }
+}
+
+export class ForbiddenError extends Error {
+  public statusCode: number;
+
+  constructor(message?: string) {
+    super(message ?? "Forbidden!");
+    this.name = ErrorName.Forbidden;
+    this.statusCode = HTTPStatus.Forbidden;
   }
 }

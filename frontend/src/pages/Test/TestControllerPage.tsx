@@ -4,7 +4,7 @@ import type { Task } from "../../types/task.type";
 import ForgeAxios from "../../modules/axios.module";
 import InputHolder from "../../components/input/InputHolder";
 import Button from "../../components/button/Button";
-import { FaSave, FaTrash } from "react-icons/fa";
+import { FaSave, FaTrash, FaShare } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "../../modules/error.module";
 import type { Test } from "../../types/test.type";
@@ -174,6 +174,9 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
 
   if (type === "edit" && !test) return <main>Loading...</main>;
 
+  const isOwner = test ? test.isOwner : true;
+  const canEdit = test ? test.canEdit : true;
+
   return (
     <div className="page">
       {/* Action bar */}
@@ -186,35 +189,27 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
         }}
       >
         {type === "new" && (
-          <Button
-            icon={<FaSave />}
-            onClick={createTest}
-            style={{ width: "auto" }}
-          >
+          <Button icon={<FaSave />} onClick={createTest} style={{ width: "auto" }}>
             Létrehozás
           </Button>
         )}
-        {type === "edit" && (
-          <>
-            <Button
-              icon={<FaSave />}
-              onClick={updateTest}
-              style={{ width: "auto" }}
-            >
-              Módosítás
-            </Button>
-            <Button
-              icon={<FaTrash />}
-              onClick={deleteTest}
-              style={{
-                width: "auto",
-                background: "linear-gradient(180deg,#b91c1c,#991b1b)",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
-              }}
-            >
-              Törlés
-            </Button>
-          </>
+        {type === "edit" && canEdit && (
+          <Button icon={<FaSave />} onClick={updateTest} style={{ width: "auto" }}>
+            Módosítás
+          </Button>
+        )}
+        {type === "edit" && isOwner && (
+          <Button
+            icon={<FaTrash />}
+            onClick={deleteTest}
+            style={{
+              width: "auto",
+              background: "linear-gradient(180deg,#b91c1c,#991b1b)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+            }}
+          >
+            Törlés
+          </Button>
         )}
       </div>
 
@@ -512,6 +507,18 @@ const TestControllerPage: React.FC<Props> = ({ type }) => {
             })}
           </div>
         </Section>
+      )}
+
+      {type === "edit" && test && isOwner && (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "var(--content-padding)" }}>
+          <Button
+            icon={<FaShare />}
+            onClick={() => navigate(`/tests/${test.id}/share`)}
+            style={{ width: "auto" }}
+          >
+            Megosztás kezelése
+          </Button>
+        </div>
       )}
     </div>
   );

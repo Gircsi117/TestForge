@@ -4,6 +4,8 @@ import "./log.module";
 
 dotenv.config({ quiet: true });
 
+import { User } from "../database/models/user.model";
+
 // Plugins
 import env from "@fastify/env";
 import cors from "@fastify/cors";
@@ -15,11 +17,10 @@ import cookie from "@fastify/cookie";
 import AuthController from "../controllers/auth.controller";
 import RootController from "../controllers/root.controller";
 import CategoryController from "../controllers/category.controller";
-import { User } from "../database/models/user.model";
 import TaskController from "../controllers/task.controller";
-import db from "../database/db";
 import TestController from "../controllers/test.controller";
 import HistoryController from "../controllers/history.controller";
+import ShareController from "../controllers/share.controller";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -128,6 +129,7 @@ class Server {
     TaskController.init(this.app, { prefix: "/task" });
     TestController.init(this.app, { prefix: "/test" });
     HistoryController.init(this.app, { prefix: "/history" });
+    ShareController.init(this.app, { prefix: "/share" });
   }
 }
 

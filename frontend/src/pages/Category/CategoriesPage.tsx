@@ -5,6 +5,9 @@ import Button from "../../components/button/Button";
 import { FaGear, FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { getMonogram } from "../../modules/monogram.module";
+import AcceptShareModal from "../../components/share/AcceptShareModal";
+import Label from "../../components/label/Label";
+import { FaLock } from "react-icons/fa";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -24,43 +27,59 @@ const CategoriesPage = () => {
 
   return (
     <main>
-      <Link to="/categories/new" style={{ display: "inline-block" }}>
-        <Button
-          icon={<FaPlus />}
-          style={{ marginBottom: "var(--content-padding)" }}
-        >
-          Új Kategória
-        </Button>
-      </Link>
+      <div
+        style={{
+          display: "flex",
+          gap: "10px",
+          marginBottom: "var(--content-padding)",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <Link to="/categories/new" style={{ display: "inline-block" }}>
+          <Button icon={<FaPlus />}>Új Kategória</Button>
+        </Link>
+        <AcceptShareModal onAccepted={getCategories} />
+      </div>
+
       <div className="card-grid">
         {categories.map((category) => (
           <div
             key={category.id}
             className="card"
-            style={{ borderTop: "3px solid var(--button-background)", gap: 0 }}
+            style={{
+              borderTop: `3px solid ${category.isOwner ? "var(--button-background)" : "#a78bfa"}`,
+              gap: 0,
+            }}
           >
             <div className="card-content">
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   gap: "12px",
                   marginBottom: "12px",
                 }}
               >
                 <div className="monogram">{getMonogram(category.name)}</div>
-                <h2 style={{ fontSize: "18px", fontWeight: 700 }}>
-                  {category.name}
-                </h2>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h2 style={{ fontSize: "18px", fontWeight: 700 }}>
+                    {category.name}
+                  </h2>
+                  {!category.isOwner && (
+                    <p style={{ fontSize: "12px", color: "#94a3b8", marginTop: "2px" }}>
+                      Létrehozta: {category.creator.name}
+                    </p>
+                  )}
+                </div>
+                {!category.isOwner && (
+                  <Label background="rgba(167,139,250,0.12)" color="#a78bfa">
+                    {category.canEdit ? "Szerkesztő" : <><FaLock style={{ fontSize: "10px" }} /> Csak olvasó</>}
+                  </Label>
+                )}
               </div>
               {category.description && (
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color: "#94a3b8",
-                    lineHeight: "1.5",
-                  }}
-                >
+                <p style={{ fontSize: "14px", color: "#94a3b8", lineHeight: "1.5" }}>
                   {category.description}
                 </p>
               )}
@@ -73,11 +92,13 @@ const CategoriesPage = () => {
                 paddingTop: "12px",
               }}
             >
-              <Link to={`/categories/edit/${category.id}`}>
-                <Button icon={<FaGear />} style={{ width: "100%" }}>
-                  Kategória módosítása
-                </Button>
-              </Link>
+              {(category.isOwner || category.canEdit) && (
+                <Link to={`/categories/edit/${category.id}`}>
+                  <Button icon={<FaGear />} style={{ width: "100%" }}>
+                    Kategória módosítása
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         ))}
